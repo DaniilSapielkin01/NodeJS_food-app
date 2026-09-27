@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Voucher {
+  id String @id @default(uuid())
+  name String @unique
+  image String
+  description String 
+  products Product[]
+  stores Store[]
+  createdAt DateTime @default(now()) 
+}
+
+model Store {
+  id String @id @default(uuid())
+  name String
+  image String
+  voucherId String
+  voucher Voucher @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  products Product[]
+  createdAt DateTime @default(now())
+
+  @@index([voucherId])
+}
+
+model Product {
+  id String @id @default(uuid())
+  name String @unique
+  image String
+  voucherId String
+  voucher Voucher @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  stores Store[]
+  createdAt DateTime @default(now()) 
+
+  @@index([voucherId])
+}

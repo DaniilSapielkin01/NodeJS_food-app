@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 
+import { HTTP_STATUS } from "@utils/constants/statuses";
 import { validateParamsID } from "@utils/validators";
 
 import { getVoucherById } from "./vouchers.controller";
@@ -9,6 +10,7 @@ export const vouchersRouter: Router = Router();
 
 vouchersRouter.get("/", (req: Request, res: Response) => {
   // get vouchers list
+  res.status(HTTP_STATUS.OK_200).json({ message: "get vouchers list" });
 });
 
 vouchersRouter.get("/:id", validateParamsID("id"), getVoucherById);
