@@ -1,0 +1,22 @@
+
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  password String
+  name String
+  vouchers Voucher[]
+  refreshToken RefreshToken[]
+  // TODO  - нужно сделать массив ролей какие есть у юзера 
+  role ERole @default(CUSTOMER) 
+  createdAt DateTime  @default(now())
+}
+
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

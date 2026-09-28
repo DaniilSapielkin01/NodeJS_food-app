@@ -72,6 +72,23 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type EnumERoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.ERole | Prisma.EnumERoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ERole[] | Prisma.ListEnumERoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ERole[] | Prisma.ListEnumERoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumERoleFilter<$PrismaModel> | $Enums.ERole
+}
+
+export type EnumERoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ERole | Prisma.EnumERoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ERole[] | Prisma.ListEnumERoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ERole[] | Prisma.ListEnumERoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumERoleWithAggregatesFilter<$PrismaModel> | $Enums.ERole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumERoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumERoleFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -137,6 +154,23 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
+}
+
+export type NestedEnumERoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.ERole | Prisma.EnumERoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ERole[] | Prisma.ListEnumERoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ERole[] | Prisma.ListEnumERoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumERoleFilter<$PrismaModel> | $Enums.ERole
+}
+
+export type NestedEnumERoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ERole | Prisma.EnumERoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ERole[] | Prisma.ListEnumERoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ERole[] | Prisma.ListEnumERoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumERoleWithAggregatesFilter<$PrismaModel> | $Enums.ERole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumERoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumERoleFilter<$PrismaModel>
 }
 
 

@@ -1,0 +1,12 @@
+
+model Voucher {
+  id String @id @default(uuid())
+  name String @unique
+  image String
+  description String 
+  products Product[]
+  stores Store[]
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) 
+}

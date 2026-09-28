@@ -29,7 +29,12 @@
       "@middlewares/*": ["./src/middlewares/*"],
       "@config": ["./src/config"],
       "@config/*": ["./src/config/*"],
-      "@errors": ["./src/errors"]
+      "@src/types": ["./src/types"],
+      "@src/types/*": ["./src/types/*"],
+      "@errors": ["./src/errors"],
+      "@errors/*": ["./src/errors/*"],
+      "@generated": ["./src/generated"],
+      "@generated/*": ["./src/generated/*"]
     }
   },
   "include": ["src/**/*", "__tests__/**/*"]

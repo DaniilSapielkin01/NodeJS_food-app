@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { AppError, NotFoundError } from "@errors";
+import { AppError } from "@errors";
 import { HTTP_STATUS } from "@utils/constants/statuses";
 
 export const errorHandler = (

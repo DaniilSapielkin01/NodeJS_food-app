@@ -1,0 +1,11 @@
+model Product {
+  id String @id @default(uuid())
+  name String @unique
+  image String
+  voucherId String
+  voucher Voucher @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  stores Store[]
+  createdAt DateTime @default(now()) 
+
+  @@index([voucherId])
+}

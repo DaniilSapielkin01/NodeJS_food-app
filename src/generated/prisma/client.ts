@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Vouchers
- * const vouchers = await prisma.voucher.findMany()
+ * // Fetch zero or more Products
+ * const products = await prisma.product.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,17 +42,27 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model Voucher
+ * Model Product
  * 
  */
-export type Voucher = Prisma.VoucherModel
+export type Product = Prisma.ProductModel
 /**
  * Model Store
  * 
  */
 export type Store = Prisma.StoreModel
 /**
- * Model Product
+ * Model User
  * 
  */
-export type Product = Prisma.ProductModel
+export type User = Prisma.UserModel
+/**
+ * Model RefreshToken
+ * 
+ */
+export type RefreshToken = Prisma.RefreshTokenModel
+/**
+ * Model Voucher
+ * 
+ */
+export type Voucher = Prisma.VoucherModel

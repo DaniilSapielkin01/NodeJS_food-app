@@ -2,7 +2,8 @@ import typescriptParser from "@typescript-eslint/parser";
 import typescriptPlugin from "@typescript-eslint/eslint-plugin";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 
-const folders = "middlewares|modules|utils|database|config|errors";
+const folders =
+  "middlewares|modules|utils|database|config|errors|src/types|generated";
 const internalAliases = `^@(?:${folders})(?:/.*)?$`;
 
 export default [

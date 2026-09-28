@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 
 import { HTTP_STATUS } from "@utils/constants/statuses";
-import { validateParamsID } from "@utils/validators";
+import { validateParamsID } from "@utils/validators/validateParams";
 
 import { getVoucherById } from "./vouchers.controller";
 import { validateVoucherBody } from "./vouchers.validator";

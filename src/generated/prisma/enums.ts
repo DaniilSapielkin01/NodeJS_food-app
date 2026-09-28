@@ -9,7 +9,27 @@
 * 🟢 You can import this file directly.
 */
 
+export const ERole = {
+  OWNER: 'OWNER',
+  COURIER: 'COURIER',
+  CUSTOMER: 'CUSTOMER'
+} as const
+
+export type ERole = (typeof ERole)[keyof typeof ERole]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const EVoucherCategory = {
+  FOOD: 'FOOD',
+  MEDICINE: 'MEDICINE',
+  TRANSPORT: 'TRANSPORT'
+} as const
+
+export type EVoucherCategory = (typeof EVoucherCategory)[keyof typeof EVoucherCategory]
+
+
+export const EProductType = {
+  EDIBLE: 'EDIBLE',
+  NON_EDIBLE: 'NON_EDIBLE'
+} as const
+
+export type EProductType = (typeof EProductType)[keyof typeof EProductType]

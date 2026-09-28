@@ -1,0 +1,16 @@
+enum ERole {
+  OWNER
+  COURIER
+  CUSTOMER
+}
+
+enum EVoucherCategory {
+  FOOD
+  MEDICINE
+  TRANSPORT
+}
+
+enum EProductType {
+  EDIBLE
+  NON_EDIBLE
+}
