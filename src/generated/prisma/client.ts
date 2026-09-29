@@ -57,6 +57,16 @@ export type Store = Prisma.StoreModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model OwnerProfile
+ * 
+ */
+export type OwnerProfile = Prisma.OwnerProfileModel
+/**
+ * Model CourierProfile
+ * 
+ */
+export type CourierProfile = Prisma.CourierProfileModel
+/**
  * Model RefreshToken
  * 
  */

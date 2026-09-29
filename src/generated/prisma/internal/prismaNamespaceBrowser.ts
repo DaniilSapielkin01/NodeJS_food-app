@@ -54,6 +54,8 @@ export const ModelName = {
   Product: 'Product',
   Store: 'Store',
   User: 'User',
+  OwnerProfile: 'OwnerProfile',
+  CourierProfile: 'CourierProfile',
   RefreshToken: 'RefreshToken',
   Voucher: 'Voucher'
 } as const
@@ -101,11 +103,36 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
-  role: 'role',
+  roles: 'roles',
   createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const OwnerProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companyName: 'companyName',
+  phone: 'phone',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt'
+} as const
+
+export type OwnerProfileScalarFieldEnum = (typeof OwnerProfileScalarFieldEnum)[keyof typeof OwnerProfileScalarFieldEnum]
+
+
+export const CourierProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  phone: 'phone',
+  vehicleType: 'vehicleType',
+  isVerified: 'isVerified',
+  isOnline: 'isOnline',
+  createdAt: 'createdAt'
+} as const
+
+export type CourierProfileScalarFieldEnum = (typeof CourierProfileScalarFieldEnum)[keyof typeof CourierProfileScalarFieldEnum]
 
 
 export const RefreshTokenScalarFieldEnum = {

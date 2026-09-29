@@ -10,8 +10,8 @@ import { HTTP_STATUS } from "@utils/constants/statuses";
 
 import { authRepository } from "./auth.repository";
 
-const issueTokens = async (userId: string, role: ERole) => {
-  const accessToken = generateAccessToken(userId, role);
+const issueTokens = async (userId: string, roles: ERole[]) => {
+  const accessToken = generateAccessToken(userId, roles);
   const refreshToken = generateRefreshToken(userId);
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
@@ -38,7 +38,7 @@ export const loginController = async (req: Request, res: Response) => {
     throw new BadRequestError("Invalid password");
   }
 
-  const tokens = await issueTokens(user.id, user.role);
+  const tokens = await issueTokens(user.id, user.roles);
 
   return res.status(HTTP_STATUS.OK_200).json({ tokens });
 };
@@ -53,7 +53,7 @@ export const signupController = async (req: Request, res: Response) => {
     password: hashPassword,
   });
 
-  const tokens = await issueTokens(newUser.id, newUser.role);
+  const tokens = await issueTokens(newUser.id, newUser.roles);
 
   return res.status(HTTP_STATUS.CREATED_201).json({
     ...tokens,
@@ -85,14 +85,9 @@ export const refreshController = async (req: Request, res: Response) => {
   }
 
   await authRepository.deleteRefreshToken(refreshToken);
-  const tokens = await issueTokens(stored.user.id, stored.user.role);
+  const tokens = await issueTokens(stored.user.id, stored.user.roles);
 
   return res.status(HTTP_STATUS.OK_200).json({ tokens });
-};
-
-export const deleteController = async (req: Request, res: Response) => {
-  await authRepository.delete(req.user!.userId);
-  return res.sendStatus(HTTP_STATUS.OK_200);
 };
 
 export const logoutController = async (req: Request, res: Response) => {

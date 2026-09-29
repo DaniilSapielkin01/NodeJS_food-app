@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { UnauthorizedError } from "@errors";
+import { ERole } from "@generated/prisma/enums";
 
 export const authMiddleware = (
   req: Request,
@@ -28,6 +29,7 @@ export const authMiddleware = (
       process.env.JWT_ACCESS_SECRET as string,
     ) as {
       userId: string;
+      roles: ERole[];
     };
     userId = payload.userId;
   } catch {

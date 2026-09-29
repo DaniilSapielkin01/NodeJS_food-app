@@ -7,6 +7,6 @@ model Voucher {
   products Product[]
   stores Store[]
   ownerId String
-  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner OwnerProfile @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) 
 }

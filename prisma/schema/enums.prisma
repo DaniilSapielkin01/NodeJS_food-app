@@ -14,3 +14,10 @@ enum EProductType {
   EDIBLE
   NON_EDIBLE
 }
+
+enum EVehicleType {
+  BIKE
+  SCOOTER
+  CAR
+  ON_FOOT
+}

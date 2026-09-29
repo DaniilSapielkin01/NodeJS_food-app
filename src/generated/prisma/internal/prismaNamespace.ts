@@ -400,6 +400,8 @@ export const ModelName = {
   Product: 'Product',
   Store: 'Store',
   User: 'User',
+  OwnerProfile: 'OwnerProfile',
+  CourierProfile: 'CourierProfile',
   RefreshToken: 'RefreshToken',
   Voucher: 'Voucher'
 } as const
@@ -417,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "product" | "store" | "user" | "refreshToken" | "voucher"
+    modelProps: "product" | "store" | "user" | "ownerProfile" | "courierProfile" | "refreshToken" | "voucher"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -643,6 +645,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OwnerProfile: {
+      payload: Prisma.$OwnerProfilePayload<ExtArgs>
+      fields: Prisma.OwnerProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OwnerProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OwnerProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.OwnerProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OwnerProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>
+        }
+        findMany: {
+          args: Prisma.OwnerProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>[]
+        }
+        create: {
+          args: Prisma.OwnerProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>
+        }
+        createMany: {
+          args: Prisma.OwnerProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OwnerProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.OwnerProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>
+        }
+        update: {
+          args: Prisma.OwnerProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.OwnerProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OwnerProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OwnerProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.OwnerProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OwnerProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.OwnerProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOwnerProfile>
+        }
+        groupBy: {
+          args: Prisma.OwnerProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OwnerProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OwnerProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OwnerProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    CourierProfile: {
+      payload: Prisma.$CourierProfilePayload<ExtArgs>
+      fields: Prisma.CourierProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CourierProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CourierProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.CourierProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CourierProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>
+        }
+        findMany: {
+          args: Prisma.CourierProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>[]
+        }
+        create: {
+          args: Prisma.CourierProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>
+        }
+        createMany: {
+          args: Prisma.CourierProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CourierProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.CourierProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>
+        }
+        update: {
+          args: Prisma.CourierProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.CourierProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CourierProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CourierProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.CourierProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourierProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.CourierProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCourierProfile>
+        }
+        groupBy: {
+          args: Prisma.CourierProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CourierProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CourierProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CourierProfileCountAggregateOutputType> | number
+        }
+      }
+    }
     RefreshToken: {
       payload: Prisma.$RefreshTokenPayload<ExtArgs>
       fields: Prisma.RefreshTokenFieldRefs
@@ -857,11 +1007,36 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
-  role: 'role',
+  roles: 'roles',
   createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const OwnerProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companyName: 'companyName',
+  phone: 'phone',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt'
+} as const
+
+export type OwnerProfileScalarFieldEnum = (typeof OwnerProfileScalarFieldEnum)[keyof typeof OwnerProfileScalarFieldEnum]
+
+
+export const CourierProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  phone: 'phone',
+  vehicleType: 'vehicleType',
+  isVerified: 'isVerified',
+  isOnline: 'isOnline',
+  createdAt: 'createdAt'
+} as const
+
+export type CourierProfileScalarFieldEnum = (typeof CourierProfileScalarFieldEnum)[keyof typeof CourierProfileScalarFieldEnum]
 
 
 export const RefreshTokenScalarFieldEnum = {
@@ -938,6 +1113,13 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'ERole[]'
+ */
+export type ListEnumERoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ERole[]'>
+    
+
+
+/**
  * Reference to a field of type 'ERole'
  */
 export type EnumERoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ERole'>
@@ -945,9 +1127,23 @@ export type EnumERoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
- * Reference to a field of type 'ERole[]'
+ * Reference to a field of type 'Boolean'
  */
-export type ListEnumERoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ERole[]'>
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'EVehicleType[]'
+ */
+export type ListEnumEVehicleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EVehicleType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EVehicleType'
+ */
+export type EnumEVehicleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EVehicleType'>
     
 
 
@@ -1118,6 +1314,8 @@ export type GlobalOmitConfig = {
   product?: Prisma.ProductOmit
   store?: Prisma.StoreOmit
   user?: Prisma.UserOmit
+  ownerProfile?: Prisma.OwnerProfileOmit
+  courierProfile?: Prisma.CourierProfileOmit
   refreshToken?: Prisma.RefreshTokenOmit
   voucher?: Prisma.VoucherOmit
 }

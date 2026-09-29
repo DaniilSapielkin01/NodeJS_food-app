@@ -26,12 +26,6 @@ export const authRepository = {
     return await prisma.refreshToken.deleteMany({ where: { userId } });
   },
 
-  update() {},
-
-  async delete(userId: string) {
-    return await prisma.user.delete({ where: { id: userId } });
-  },
-
   async saveRefreshToken(data: ISaveRefreshToken) {
     return await prisma.refreshToken.create({ data });
   },
@@ -39,7 +33,7 @@ export const authRepository = {
   async findRefreshToken(token: string) {
     return await prisma.refreshToken.findUnique({
       where: { token },
-      include: { user: { select: { id: true, role: true } } },
+      include: { user: { select: { id: true, roles: true } } },
     });
   },
 

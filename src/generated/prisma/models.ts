@@ -11,6 +11,8 @@
 export type * from './models/Product'
 export type * from './models/Store'
 export type * from './models/User'
+export type * from './models/OwnerProfile'
+export type * from './models/CourierProfile'
 export type * from './models/RefreshToken'
 export type * from './models/Voucher'
 export type * from './commonInputTypes'

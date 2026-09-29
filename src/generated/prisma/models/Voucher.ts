@@ -192,7 +192,7 @@ export type VoucherWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Voucher"> | Date | string
   products?: Prisma.ProductListRelationFilter
   stores?: Prisma.StoreListRelationFilter
-  owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  owner?: Prisma.XOR<Prisma.OwnerProfileScalarRelationFilter, Prisma.OwnerProfileWhereInput>
 }
 
 export type VoucherOrderByWithRelationInput = {
@@ -204,7 +204,7 @@ export type VoucherOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   products?: Prisma.ProductOrderByRelationAggregateInput
   stores?: Prisma.StoreOrderByRelationAggregateInput
-  owner?: Prisma.UserOrderByWithRelationInput
+  owner?: Prisma.OwnerProfileOrderByWithRelationInput
 }
 
 export type VoucherWhereUniqueInput = Prisma.AtLeast<{
@@ -219,7 +219,7 @@ export type VoucherWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Voucher"> | Date | string
   products?: Prisma.ProductListRelationFilter
   stores?: Prisma.StoreListRelationFilter
-  owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  owner?: Prisma.XOR<Prisma.OwnerProfileScalarRelationFilter, Prisma.OwnerProfileWhereInput>
 }, "id" | "name">
 
 export type VoucherOrderByWithAggregationInput = {
@@ -254,7 +254,7 @@ export type VoucherCreateInput = {
   createdAt?: Date | string
   products?: Prisma.ProductCreateNestedManyWithoutVoucherInput
   stores?: Prisma.StoreCreateNestedManyWithoutVoucherInput
-  owner: Prisma.UserCreateNestedOneWithoutVouchersInput
+  owner: Prisma.OwnerProfileCreateNestedOneWithoutVouchersInput
 }
 
 export type VoucherUncheckedCreateInput = {
@@ -276,7 +276,7 @@ export type VoucherUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUpdateManyWithoutVoucherNestedInput
   stores?: Prisma.StoreUpdateManyWithoutVoucherNestedInput
-  owner?: Prisma.UserUpdateOneRequiredWithoutVouchersNestedInput
+  owner?: Prisma.OwnerProfileUpdateOneRequiredWithoutVouchersNestedInput
 }
 
 export type VoucherUncheckedUpdateInput = {
@@ -435,7 +435,7 @@ export type VoucherCreateWithoutProductsInput = {
   description: string
   createdAt?: Date | string
   stores?: Prisma.StoreCreateNestedManyWithoutVoucherInput
-  owner: Prisma.UserCreateNestedOneWithoutVouchersInput
+  owner: Prisma.OwnerProfileCreateNestedOneWithoutVouchersInput
 }
 
 export type VoucherUncheckedCreateWithoutProductsInput = {
@@ -471,7 +471,7 @@ export type VoucherUpdateWithoutProductsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stores?: Prisma.StoreUpdateManyWithoutVoucherNestedInput
-  owner?: Prisma.UserUpdateOneRequiredWithoutVouchersNestedInput
+  owner?: Prisma.OwnerProfileUpdateOneRequiredWithoutVouchersNestedInput
 }
 
 export type VoucherUncheckedUpdateWithoutProductsInput = {
@@ -491,7 +491,7 @@ export type VoucherCreateWithoutStoresInput = {
   description: string
   createdAt?: Date | string
   products?: Prisma.ProductCreateNestedManyWithoutVoucherInput
-  owner: Prisma.UserCreateNestedOneWithoutVouchersInput
+  owner: Prisma.OwnerProfileCreateNestedOneWithoutVouchersInput
 }
 
 export type VoucherUncheckedCreateWithoutStoresInput = {
@@ -527,7 +527,7 @@ export type VoucherUpdateWithoutStoresInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUpdateManyWithoutVoucherNestedInput
-  owner?: Prisma.UserUpdateOneRequiredWithoutVouchersNestedInput
+  owner?: Prisma.OwnerProfileUpdateOneRequiredWithoutVouchersNestedInput
 }
 
 export type VoucherUncheckedUpdateWithoutStoresInput = {
@@ -683,7 +683,7 @@ export type VoucherSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   products?: boolean | Prisma.Voucher$productsArgs<ExtArgs>
   stores?: boolean | Prisma.Voucher$storesArgs<ExtArgs>
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.OwnerProfileDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.VoucherCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["voucher"]>
 
@@ -694,7 +694,7 @@ export type VoucherSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   ownerId?: boolean
   createdAt?: boolean
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.OwnerProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["voucher"]>
 
 export type VoucherSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -704,7 +704,7 @@ export type VoucherSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   ownerId?: boolean
   createdAt?: boolean
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.OwnerProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["voucher"]>
 
 export type VoucherSelectScalar = {
@@ -720,14 +720,14 @@ export type VoucherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type VoucherInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   products?: boolean | Prisma.Voucher$productsArgs<ExtArgs>
   stores?: boolean | Prisma.Voucher$storesArgs<ExtArgs>
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.OwnerProfileDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.VoucherCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VoucherIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.OwnerProfileDefaultArgs<ExtArgs>
 }
 export type VoucherIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  owner?: boolean | Prisma.OwnerProfileDefaultArgs<ExtArgs>
 }
 
 export type $VoucherPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -735,7 +735,7 @@ export type $VoucherPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     products: Prisma.$ProductPayload<ExtArgs>[]
     stores: Prisma.$StorePayload<ExtArgs>[]
-    owner: Prisma.$UserPayload<ExtArgs>
+    owner: Prisma.$OwnerProfilePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1140,7 +1140,7 @@ export interface Prisma__VoucherClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   products<T extends Prisma.Voucher$productsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Voucher$productsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stores<T extends Prisma.Voucher$storesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Voucher$storesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  owner<T extends Prisma.OwnerProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OwnerProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__OwnerProfileClient<runtime.Types.Result.GetResult<Prisma.$OwnerProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

@@ -33,3 +33,13 @@ export const EProductType = {
 } as const
 
 export type EProductType = (typeof EProductType)[keyof typeof EProductType]
+
+
+export const EVehicleType = {
+  BIKE: 'BIKE',
+  SCOOTER: 'SCOOTER',
+  CAR: 'CAR',
+  ON_FOOT: 'ON_FOOT'
+} as const
+
+export type EVehicleType = (typeof EVehicleType)[keyof typeof EVehicleType]

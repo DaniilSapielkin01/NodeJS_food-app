@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken";
 
 import { ERole } from "@generated/prisma/enums";
 
-export const generateAccessToken = (userId: string, role: ERole) =>
-  jwt.sign({ userId, role }, process.env.JWT_ACCESS_SECRET as string, {
+export const generateAccessToken = (userId: string, roles: ERole[]) =>
+  jwt.sign({ userId, roles }, process.env.JWT_ACCESS_SECRET as string, {
     expiresIn: "15m",
   });
 
