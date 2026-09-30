@@ -1,19 +1,53 @@
 import { Router } from "express";
 
-import { authMiddleware } from "@middlewares/auth.middlewares";
+import { ERole } from "@generated/prisma/enums";
+import {
+  authMiddleware,
+  requireRoleMiddleware,
+} from "@middlewares/auth.middlewares";
 
 import {
   addRoleController,
+  deleteRoleController,
   deleteUserController,
   getUserController,
+  updateCourierController,
+  updateOwnerController,
+  updateUserController,
 } from "./users.controller";
-import { addRoleValidator, userRoleValidator } from "./users.validator";
+import {
+  addRoleValidator,
+  deleteUserRoleValidator,
+  updateCourierValidator,
+  updateOwnerValidator,
+  updateUserValidator,
+  userRoleValidator,
+} from "./users.validator";
 
 export const userRouter: Router = Router();
 
 userRouter.use(authMiddleware);
 
 userRouter.get("/me", userRoleValidator(), getUserController);
-userRouter.post("/roles/:role", addRoleValidator(), addRoleController);
+
+userRouter.patch("/me", updateUserValidator(), updateUserController);
+userRouter.patch(
+  "/owner",
+  requireRoleMiddleware(ERole.OWNER),
+  updateOwnerValidator(),
+  updateOwnerController,
+);
+userRouter.patch(
+  "/courier",
+  requireRoleMiddleware(ERole.COURIER),
+  updateCourierValidator(),
+  updateCourierController,
+);
+
+// userRouter.patch("/me/email", updateEmailValidator(), updateEmailController);
+// userRouter.patch("/me/password", updatePasswordValidator(), updatePasswordController);
+
+userRouter.post("/roles", addRoleValidator(), addRoleController);
+userRouter.delete("/roles", deleteUserRoleValidator(), deleteRoleController);
 
 userRouter.delete("/me", deleteUserController);
