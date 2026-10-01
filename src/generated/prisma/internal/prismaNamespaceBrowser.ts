@@ -80,6 +80,11 @@ export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
   image: 'image',
+  description: 'description',
+  price: 'price',
+  discount: 'discount',
+  inStock: 'inStock',
+  count: 'count',
   voucherId: 'voucherId',
   createdAt: 'createdAt'
 } as const
@@ -151,6 +156,7 @@ export const VoucherScalarFieldEnum = {
   name: 'name',
   image: 'image',
   description: 'description',
+  category: 'category',
   ownerId: 'ownerId',
   createdAt: 'createdAt'
 } as const

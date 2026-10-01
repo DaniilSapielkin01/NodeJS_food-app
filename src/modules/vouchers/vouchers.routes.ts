@@ -1,28 +1,54 @@
 import { Request, Response, Router } from "express";
 
-import { HTTP_STATUS } from "@utils/constants/statuses";
+import { ERole } from "@generated/prisma/enums";
+import {
+  authMiddleware,
+  requireRoleMiddleware,
+} from "@middlewares/auth.middlewares";
 import { validateParamsID } from "@utils/validators/validateParams";
 
-import { getVoucherById } from "./vouchers.controller";
-import { validateVoucherBody } from "./vouchers.validator";
+import {
+  createVoucherController,
+  deleteVoucherController,
+  getByIdController,
+  getListController,
+  updateVoucherController,
+} from "./vouchers.controller";
+import {
+  createVoucherValidator,
+  updateVoucherValidator,
+} from "./vouchers.validator";
 
 export const vouchersRouter: Router = Router();
 
-vouchersRouter.get("/", (req: Request, res: Response) => {
-  // get vouchers list
-  res.status(HTTP_STATUS.OK_200).json({ message: "get vouchers list" });
-});
+// GET
+vouchersRouter.get("/list", getListController);
+vouchersRouter.get("/:id", validateParamsID("id"), getByIdController);
 
-vouchersRouter.get("/:id", validateParamsID("id"), getVoucherById);
+// Middleware
+vouchersRouter.use(authMiddleware);
 
-vouchersRouter.post("/", validateVoucherBody, (req: Request, res: Response) => {
-  // post a new vouchers after get special key for a new vouchers
-});
+// CREATE
+vouchersRouter.post(
+  "/",
+  requireRoleMiddleware(ERole.OWNER),
+  createVoucherValidator(),
+  createVoucherController,
+);
 
-vouchersRouter.put("/:id", (req: Request, res: Response) => {
-  // put voucher information item by ID
-});
+// UPDATE
+vouchersRouter.patch(
+  "/:id",
+  validateParamsID("id"),
+  requireRoleMiddleware(ERole.OWNER),
+  updateVoucherValidator(),
+  updateVoucherController,
+);
 
-vouchersRouter.delete("/:id", (req: Request, res: Response) => {
-  // delete vouchers item by ID
-});
+// DELETE
+vouchersRouter.delete(
+  "/:id",
+  requireRoleMiddleware(ERole.OWNER),
+  validateParamsID("id"),
+  deleteVoucherController,
+);

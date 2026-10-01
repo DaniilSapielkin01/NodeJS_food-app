@@ -3,26 +3,11 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { BadRequestError, UnauthorizedError } from "@errors";
-import { ERole } from "@generated/prisma/enums";
 import { IBodyLogin, IBodySignup } from "@src/types/auth.types";
-import { generateAccessToken, generateRefreshToken } from "@utils/auth.utils";
+import { issueTokens } from "@utils/auth/auth.utils";
 import { HTTP_STATUS } from "@utils/constants/statuses";
 
 import { authRepository } from "./auth.repository";
-
-const issueTokens = async (userId: string, roles: ERole[]) => {
-  const accessToken = generateAccessToken(userId, roles);
-  const refreshToken = generateRefreshToken(userId);
-
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  await authRepository.saveRefreshToken({
-    userId,
-    token: refreshToken,
-    expiresAt,
-  });
-
-  return { accessToken, refreshToken };
-};
 
 export const loginController = async (req: Request, res: Response) => {
   const body = req.body as IBodyLogin;
@@ -67,20 +52,16 @@ export const signupController = async (req: Request, res: Response) => {
 
 export const refreshController = async (req: Request, res: Response) => {
   const { refreshToken } = req.body as { refreshToken: string };
-  let payload: { userId: string };
 
   try {
-    payload = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET as string,
-    ) as { userId: string };
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string);
   } catch {
     throw new UnauthorizedError("Invalid refresh token");
   }
 
   const stored = await authRepository.findRefreshToken(refreshToken);
 
-  if (!stored) {
+  if (!stored || stored.expiresAt < new Date()) {
     throw new UnauthorizedError("Invalid or expired refresh token");
   }
 

@@ -4,6 +4,7 @@ model Voucher {
   name String @unique
   image String
   description String 
+  category EVoucherCategory
   products Product[]
   stores Store[]
   ownerId String

@@ -29,6 +29,7 @@ export type VoucherMinAggregateOutputType = {
   name: string | null
   image: string | null
   description: string | null
+  category: $Enums.EVoucherCategory | null
   ownerId: string | null
   createdAt: Date | null
 }
@@ -38,6 +39,7 @@ export type VoucherMaxAggregateOutputType = {
   name: string | null
   image: string | null
   description: string | null
+  category: $Enums.EVoucherCategory | null
   ownerId: string | null
   createdAt: Date | null
 }
@@ -47,6 +49,7 @@ export type VoucherCountAggregateOutputType = {
   name: number
   image: number
   description: number
+  category: number
   ownerId: number
   createdAt: number
   _all: number
@@ -58,6 +61,7 @@ export type VoucherMinAggregateInputType = {
   name?: true
   image?: true
   description?: true
+  category?: true
   ownerId?: true
   createdAt?: true
 }
@@ -67,6 +71,7 @@ export type VoucherMaxAggregateInputType = {
   name?: true
   image?: true
   description?: true
+  category?: true
   ownerId?: true
   createdAt?: true
 }
@@ -76,6 +81,7 @@ export type VoucherCountAggregateInputType = {
   name?: true
   image?: true
   description?: true
+  category?: true
   ownerId?: true
   createdAt?: true
   _all?: true
@@ -158,6 +164,7 @@ export type VoucherGroupByOutputType = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   ownerId: string
   createdAt: Date
   _count: VoucherCountAggregateOutputType | null
@@ -188,6 +195,7 @@ export type VoucherWhereInput = {
   name?: Prisma.StringFilter<"Voucher"> | string
   image?: Prisma.StringFilter<"Voucher"> | string
   description?: Prisma.StringFilter<"Voucher"> | string
+  category?: Prisma.EnumEVoucherCategoryFilter<"Voucher"> | $Enums.EVoucherCategory
   ownerId?: Prisma.StringFilter<"Voucher"> | string
   createdAt?: Prisma.DateTimeFilter<"Voucher"> | Date | string
   products?: Prisma.ProductListRelationFilter
@@ -200,6 +208,7 @@ export type VoucherOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   image?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   products?: Prisma.ProductOrderByRelationAggregateInput
@@ -215,6 +224,7 @@ export type VoucherWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.VoucherWhereInput | Prisma.VoucherWhereInput[]
   image?: Prisma.StringFilter<"Voucher"> | string
   description?: Prisma.StringFilter<"Voucher"> | string
+  category?: Prisma.EnumEVoucherCategoryFilter<"Voucher"> | $Enums.EVoucherCategory
   ownerId?: Prisma.StringFilter<"Voucher"> | string
   createdAt?: Prisma.DateTimeFilter<"Voucher"> | Date | string
   products?: Prisma.ProductListRelationFilter
@@ -227,6 +237,7 @@ export type VoucherOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   image?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.VoucherCountOrderByAggregateInput
@@ -242,6 +253,7 @@ export type VoucherScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Voucher"> | string
   image?: Prisma.StringWithAggregatesFilter<"Voucher"> | string
   description?: Prisma.StringWithAggregatesFilter<"Voucher"> | string
+  category?: Prisma.EnumEVoucherCategoryWithAggregatesFilter<"Voucher"> | $Enums.EVoucherCategory
   ownerId?: Prisma.StringWithAggregatesFilter<"Voucher"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Voucher"> | Date | string
 }
@@ -251,6 +263,7 @@ export type VoucherCreateInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   createdAt?: Date | string
   products?: Prisma.ProductCreateNestedManyWithoutVoucherInput
   stores?: Prisma.StoreCreateNestedManyWithoutVoucherInput
@@ -262,6 +275,7 @@ export type VoucherUncheckedCreateInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   ownerId: string
   createdAt?: Date | string
   products?: Prisma.ProductUncheckedCreateNestedManyWithoutVoucherInput
@@ -273,6 +287,7 @@ export type VoucherUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUpdateManyWithoutVoucherNestedInput
   stores?: Prisma.StoreUpdateManyWithoutVoucherNestedInput
@@ -284,6 +299,7 @@ export type VoucherUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUncheckedUpdateManyWithoutVoucherNestedInput
@@ -295,6 +311,7 @@ export type VoucherCreateManyInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   ownerId: string
   createdAt?: Date | string
 }
@@ -304,6 +321,7 @@ export type VoucherUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -312,6 +330,7 @@ export type VoucherUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -336,6 +355,7 @@ export type VoucherCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   image?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -345,6 +365,7 @@ export type VoucherMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   image?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -354,6 +375,7 @@ export type VoucherMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   image?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -428,11 +450,16 @@ export type VoucherUncheckedUpdateManyWithoutOwnerNestedInput = {
   deleteMany?: Prisma.VoucherScalarWhereInput | Prisma.VoucherScalarWhereInput[]
 }
 
+export type EnumEVoucherCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.EVoucherCategory
+}
+
 export type VoucherCreateWithoutProductsInput = {
   id?: string
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   createdAt?: Date | string
   stores?: Prisma.StoreCreateNestedManyWithoutVoucherInput
   owner: Prisma.OwnerProfileCreateNestedOneWithoutVouchersInput
@@ -443,6 +470,7 @@ export type VoucherUncheckedCreateWithoutProductsInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   ownerId: string
   createdAt?: Date | string
   stores?: Prisma.StoreUncheckedCreateNestedManyWithoutVoucherInput
@@ -469,6 +497,7 @@ export type VoucherUpdateWithoutProductsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stores?: Prisma.StoreUpdateManyWithoutVoucherNestedInput
   owner?: Prisma.OwnerProfileUpdateOneRequiredWithoutVouchersNestedInput
@@ -479,6 +508,7 @@ export type VoucherUncheckedUpdateWithoutProductsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stores?: Prisma.StoreUncheckedUpdateManyWithoutVoucherNestedInput
@@ -489,6 +519,7 @@ export type VoucherCreateWithoutStoresInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   createdAt?: Date | string
   products?: Prisma.ProductCreateNestedManyWithoutVoucherInput
   owner: Prisma.OwnerProfileCreateNestedOneWithoutVouchersInput
@@ -499,6 +530,7 @@ export type VoucherUncheckedCreateWithoutStoresInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   ownerId: string
   createdAt?: Date | string
   products?: Prisma.ProductUncheckedCreateNestedManyWithoutVoucherInput
@@ -525,6 +557,7 @@ export type VoucherUpdateWithoutStoresInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUpdateManyWithoutVoucherNestedInput
   owner?: Prisma.OwnerProfileUpdateOneRequiredWithoutVouchersNestedInput
@@ -535,6 +568,7 @@ export type VoucherUncheckedUpdateWithoutStoresInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUncheckedUpdateManyWithoutVoucherNestedInput
@@ -545,6 +579,7 @@ export type VoucherCreateWithoutOwnerInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   createdAt?: Date | string
   products?: Prisma.ProductCreateNestedManyWithoutVoucherInput
   stores?: Prisma.StoreCreateNestedManyWithoutVoucherInput
@@ -555,6 +590,7 @@ export type VoucherUncheckedCreateWithoutOwnerInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   createdAt?: Date | string
   products?: Prisma.ProductUncheckedCreateNestedManyWithoutVoucherInput
   stores?: Prisma.StoreUncheckedCreateNestedManyWithoutVoucherInput
@@ -594,6 +630,7 @@ export type VoucherScalarWhereInput = {
   name?: Prisma.StringFilter<"Voucher"> | string
   image?: Prisma.StringFilter<"Voucher"> | string
   description?: Prisma.StringFilter<"Voucher"> | string
+  category?: Prisma.EnumEVoucherCategoryFilter<"Voucher"> | $Enums.EVoucherCategory
   ownerId?: Prisma.StringFilter<"Voucher"> | string
   createdAt?: Prisma.DateTimeFilter<"Voucher"> | Date | string
 }
@@ -603,6 +640,7 @@ export type VoucherCreateManyOwnerInput = {
   name: string
   image: string
   description: string
+  category: $Enums.EVoucherCategory
   createdAt?: Date | string
 }
 
@@ -611,6 +649,7 @@ export type VoucherUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUpdateManyWithoutVoucherNestedInput
   stores?: Prisma.StoreUpdateManyWithoutVoucherNestedInput
@@ -621,6 +660,7 @@ export type VoucherUncheckedUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductUncheckedUpdateManyWithoutVoucherNestedInput
   stores?: Prisma.StoreUncheckedUpdateManyWithoutVoucherNestedInput
@@ -631,6 +671,7 @@ export type VoucherUncheckedUpdateManyWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumEVoucherCategoryFieldUpdateOperationsInput | $Enums.EVoucherCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -679,6 +720,7 @@ export type VoucherSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name?: boolean
   image?: boolean
   description?: boolean
+  category?: boolean
   ownerId?: boolean
   createdAt?: boolean
   products?: boolean | Prisma.Voucher$productsArgs<ExtArgs>
@@ -692,6 +734,7 @@ export type VoucherSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   image?: boolean
   description?: boolean
+  category?: boolean
   ownerId?: boolean
   createdAt?: boolean
   owner?: boolean | Prisma.OwnerProfileDefaultArgs<ExtArgs>
@@ -702,6 +745,7 @@ export type VoucherSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   image?: boolean
   description?: boolean
+  category?: boolean
   ownerId?: boolean
   createdAt?: boolean
   owner?: boolean | Prisma.OwnerProfileDefaultArgs<ExtArgs>
@@ -712,11 +756,12 @@ export type VoucherSelectScalar = {
   name?: boolean
   image?: boolean
   description?: boolean
+  category?: boolean
   ownerId?: boolean
   createdAt?: boolean
 }
 
-export type VoucherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "image" | "description" | "ownerId" | "createdAt", ExtArgs["result"]["voucher"]>
+export type VoucherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "image" | "description" | "category" | "ownerId" | "createdAt", ExtArgs["result"]["voucher"]>
 export type VoucherInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   products?: boolean | Prisma.Voucher$productsArgs<ExtArgs>
   stores?: boolean | Prisma.Voucher$storesArgs<ExtArgs>
@@ -742,6 +787,7 @@ export type $VoucherPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     name: string
     image: string
     description: string
+    category: $Enums.EVoucherCategory
     ownerId: string
     createdAt: Date
   }, ExtArgs["result"]["voucher"]>
@@ -1174,6 +1220,7 @@ export interface VoucherFieldRefs {
   readonly name: Prisma.FieldRef<"Voucher", 'String'>
   readonly image: Prisma.FieldRef<"Voucher", 'String'>
   readonly description: Prisma.FieldRef<"Voucher", 'String'>
+  readonly category: Prisma.FieldRef<"Voucher", 'EVoucherCategory'>
   readonly ownerId: Prisma.FieldRef<"Voucher", 'String'>
   readonly createdAt: Prisma.FieldRef<"Voucher", 'DateTime'>
 }

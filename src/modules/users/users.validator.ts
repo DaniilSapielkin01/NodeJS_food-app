@@ -3,14 +3,9 @@ import { body, query } from "express-validator";
 import { ERole, EVehicleType } from "@generated/prisma/enums";
 import { withValidation } from "@utils/validators/widthValidation";
 
-//
 export const userRoleValidator = () =>
   withValidation([
-    query("role")
-      .optional()
-      .toUpperCase()
-      .isIn([ERole.OWNER, ERole.COURIER])
-      .withMessage("Role must be required"),
+    query("role").optional().toUpperCase().isIn([ERole.OWNER, ERole.COURIER]),
   ]);
 
 // DELETE

@@ -984,6 +984,11 @@ export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
   image: 'image',
+  description: 'description',
+  price: 'price',
+  discount: 'discount',
+  inStock: 'inStock',
+  count: 'count',
   voucherId: 'voucherId',
   createdAt: 'createdAt'
 } as const
@@ -1055,6 +1060,7 @@ export const VoucherScalarFieldEnum = {
   name: 'name',
   image: 'image',
   description: 'description',
+  category: 'category',
   ownerId: 'ownerId',
   createdAt: 'createdAt'
 } as const
@@ -1099,6 +1105,27 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -1127,13 +1154,6 @@ export type EnumERoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
  * Reference to a field of type 'EVehicleType[]'
  */
 export type ListEnumEVehicleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EVehicleType[]'>
@@ -1148,16 +1168,30 @@ export type EnumEVehicleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
- * Reference to a field of type 'Int'
+ * Reference to a field of type 'EVoucherCategory'
  */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+export type EnumEVoucherCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EVoucherCategory'>
     
 
 
 /**
- * Reference to a field of type 'Int[]'
+ * Reference to a field of type 'EVoucherCategory[]'
  */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+export type ListEnumEVoucherCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EVoucherCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**

@@ -17,12 +17,15 @@ export const userRepository = {
     });
   },
 
+  async findOwnerByUserId(userId: string) {
+    return prisma.ownerProfile.findUnique({ where: { userId } });
+  },
+
   // UPDATE
   async update(id: string, data: Prisma.UserUpdateInput) {
     return await prisma.user.update({
       where: { id },
       data,
-      omit: { password: true },
     });
   },
 
@@ -45,6 +48,7 @@ export const userRepository = {
         roles: { push: ERole.OWNER },
         ownerProfile: { create: data },
       },
+      omit: { password: true },
     });
   },
 
@@ -58,6 +62,7 @@ export const userRepository = {
         roles: { push: ERole.COURIER },
         courierProfile: { create: data },
       },
+      omit: { password: true },
     });
   },
 

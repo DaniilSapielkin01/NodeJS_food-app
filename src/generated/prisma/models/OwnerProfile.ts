@@ -378,10 +378,6 @@ export type OwnerProfileUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OwnerProfileUpdateToOneWithWhereWithoutUserInput, Prisma.OwnerProfileUpdateWithoutUserInput>, Prisma.OwnerProfileUncheckedUpdateWithoutUserInput>
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type OwnerProfileCreateNestedOneWithoutVouchersInput = {
   create?: Prisma.XOR<Prisma.OwnerProfileCreateWithoutVouchersInput, Prisma.OwnerProfileUncheckedCreateWithoutVouchersInput>
   connectOrCreate?: Prisma.OwnerProfileCreateOrConnectWithoutVouchersInput
