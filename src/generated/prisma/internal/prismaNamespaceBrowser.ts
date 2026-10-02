@@ -95,7 +95,9 @@ export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeo
 export const StoreScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   image: 'image',
+  address: 'address',
   voucherId: 'voucherId',
   createdAt: 'createdAt'
 } as const
@@ -178,4 +180,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

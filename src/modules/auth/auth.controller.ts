@@ -3,14 +3,13 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { BadRequestError, UnauthorizedError } from "@errors";
-import { IBodyLogin, IBodySignup } from "@src/types/auth.types";
 import { issueTokens } from "@utils/auth/auth.utils";
 import { HTTP_STATUS } from "@utils/constants/statuses";
 
 import { authRepository } from "./auth.repository";
 
 export const loginController = async (req: Request, res: Response) => {
-  const body = req.body as IBodyLogin;
+  const body = req.body;
   const user = await authRepository.login(body);
 
   if (!user) {
@@ -23,13 +22,13 @@ export const loginController = async (req: Request, res: Response) => {
     throw new BadRequestError("Invalid password");
   }
 
-  const tokens = await issueTokens(user.id, user.roles);
+  const tokens = await issueTokens(user.id);
 
-  return res.status(HTTP_STATUS.OK_200).json({ tokens });
+  return res.status(HTTP_STATUS.OK_200).json(tokens);
 };
 
 export const signupController = async (req: Request, res: Response) => {
-  const body = req.body as IBodySignup;
+  const body = req.body;
 
   const hashPassword = await bcrypt.hash(body.password, 10);
 
@@ -38,7 +37,7 @@ export const signupController = async (req: Request, res: Response) => {
     password: hashPassword,
   });
 
-  const tokens = await issueTokens(newUser.id, newUser.roles);
+  const tokens = await issueTokens(newUser.id);
 
   return res.status(HTTP_STATUS.CREATED_201).json({
     ...tokens,
@@ -53,22 +52,25 @@ export const signupController = async (req: Request, res: Response) => {
 export const refreshController = async (req: Request, res: Response) => {
   const { refreshToken } = req.body as { refreshToken: string };
 
+  let payload: { userId: string };
   try {
-    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string);
+    payload = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET as string,
+    ) as { userId: string };
   } catch {
     throw new UnauthorizedError("Invalid refresh token");
   }
 
-  const stored = await authRepository.findRefreshToken(refreshToken);
+  const consumed = await authRepository.consumeRefreshToken(refreshToken);
 
-  if (!stored || stored.expiresAt < new Date()) {
+  if (!consumed) {
     throw new UnauthorizedError("Invalid or expired refresh token");
   }
 
-  await authRepository.deleteRefreshToken(refreshToken);
-  const tokens = await issueTokens(stored.user.id, stored.user.roles);
+  const tokens = await issueTokens(payload.userId);
 
-  return res.status(HTTP_STATUS.OK_200).json({ tokens });
+  return res.status(HTTP_STATUS.OK_200).json(tokens);
 };
 
 export const logoutController = async (req: Request, res: Response) => {

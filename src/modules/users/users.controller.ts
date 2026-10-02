@@ -51,7 +51,7 @@ export const addRoleController = async (req: Request, res: Response) => {
     });
   }
 
-  const tokens = await issueTokens(userId, updatedUser!.roles);
+  const tokens = await issueTokens(userId);
 
   return res.status(HTTP_STATUS.CREATED_201).json(tokens);
 };
@@ -109,7 +109,7 @@ export const deleteRoleController = async (req: Request, res: Response) => {
     await userRepository.deleteCourier(userId, roles);
   }
 
-  const tokens = await issueTokens(userId, roles);
+  const tokens = await issueTokens(userId);
 
   return res
     .status(HTTP_STATUS.OK_200)

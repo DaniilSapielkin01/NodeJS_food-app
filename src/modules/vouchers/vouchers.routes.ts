@@ -5,7 +5,7 @@ import {
   authMiddleware,
   requireRoleMiddleware,
 } from "@middlewares/auth.middlewares";
-import { validateParamsID } from "@utils/validators/validateParams";
+import { paramsIDValidator } from "@utils/validators/validateParams";
 
 import {
   createVoucherController,
@@ -23,7 +23,7 @@ export const vouchersRouter: Router = Router();
 
 // GET
 vouchersRouter.get("/list", getListController);
-vouchersRouter.get("/:id", validateParamsID("id"), getByIdController);
+vouchersRouter.get("/:id", paramsIDValidator("id"), getByIdController);
 
 // Middleware
 vouchersRouter.use(authMiddleware);
@@ -39,7 +39,7 @@ vouchersRouter.post(
 // UPDATE
 vouchersRouter.patch(
   "/:id",
-  validateParamsID("id"),
+  paramsIDValidator("id"),
   requireRoleMiddleware(ERole.OWNER),
   updateVoucherValidator(),
   updateVoucherController,
@@ -49,6 +49,6 @@ vouchersRouter.patch(
 vouchersRouter.delete(
   "/:id",
   requireRoleMiddleware(ERole.OWNER),
-  validateParamsID("id"),
+  paramsIDValidator("id"),
   deleteVoucherController,
 );

@@ -1,20 +1,18 @@
-import { body, query } from "express-validator";
+import { body } from "express-validator";
 
-import { EVoucherCategory } from "@generated/prisma/enums";
 import { withValidation } from "@utils/validators/widthValidation";
-
-export const getProductsValidator = () =>
-  withValidation([
-    query("category")
-      .optional()
-      .toUpperCase()
-      .isIn(Object.values(EVoucherCategory)),
-  ]);
 
 // CREATE
 export const createProductValidator = () =>
   withValidation([
     body("voucherId").isUUID().withMessage("voucherId must be a valid UUID"),
+    body("storeIds")
+      .isArray({ min: 1 })
+      .withMessage("storeIds must be an array")
+      .bail()
+      .isUUID()
+      .withMessage("storeId must be a valid UUID"),
+
     body("name").trim().notEmpty().withMessage("name is required"),
 
     body("image").optional().trim().notEmpty().withMessage("image is required"),
@@ -47,7 +45,13 @@ export const createProductValidator = () =>
 // UPDATE
 export const updateProductValidator = () =>
   withValidation([
-    body("voucherId").isUUID().withMessage("voucherId must be a valid UUID"),
+    body("storeIds")
+      .optional()
+      .isArray()
+      .withMessage("storeIds must be an array")
+      .bail()
+      .isUUID()
+      .withMessage("storeId must be a valid UUID"),
 
     body("name")
       .optional()
@@ -86,4 +90,15 @@ export const updateProductValidator = () =>
       .isInt({ min: 0 })
       .withMessage("count must be an integer >= 0")
       .toInt(),
+  ]);
+
+// DELETE
+export const validateDeleteList = () =>
+  withValidation([
+    body("productsIds")
+      .isArray()
+      .withMessage("ProductsIds must be an array")
+      .bail()
+      .isUUID()
+      .withMessage("ProductsIds must be a valid UUID"),
   ]);

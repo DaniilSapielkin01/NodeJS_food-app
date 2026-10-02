@@ -1,7 +1,9 @@
 model Store {
   id String @id @default(uuid())
   name String
-  image String
+  description String?
+  image String?
+  address String
   voucherId String
   voucher Voucher @relation(fields: [voucherId], references: [id], onDelete: Cascade)
   products Product[]

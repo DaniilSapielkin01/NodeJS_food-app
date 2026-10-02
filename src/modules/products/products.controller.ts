@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 
-import { BadRequestError, ForbiddenError, NotFoundError } from "@errors";
 import { EVoucherCategory } from "@generated/prisma/enums";
-import { userRepository } from "@modules/users/users.repository";
 import { HTTP_STATUS } from "@utils/constants/statuses";
 
 import { productsRepository } from "./products.repository";
 
+// GET
 export const getProductsListController = async (
   req: Request,
   res: Response,
@@ -27,31 +26,51 @@ export const getProductsByIdController = async (
   return res.status(HTTP_STATUS.OK_200).json(products);
 };
 
+export const getMyProductsController = async (req: Request, res: Response) => {
+  const products = await productsRepository.getProductsByUserId(
+    req.user!.userId,
+  );
+
+  return res.status(HTTP_STATUS.OK_200).json(products);
+};
+
+// CREATE
 export const createProductsController = async (req: Request, res: Response) => {
-  const owner = await userRepository.findOwnerByUserId(req.user!.userId);
-
-  if (!owner) {
-    throw new ForbiddenError("Owner profile not found");
-  }
-
-  const product = await productsRepository.create(owner.id, req.body);
+  const product = await productsRepository.create(req.user!.userId, req.body);
 
   return res.status(HTTP_STATUS.CREATED_201).json(product);
 };
 
+// UPDATE
 export const updateProductsController = async (req: Request, res: Response) => {
   const productId = req.params.id as string;
-  const owner = await userRepository.findOwnerByUserId(req.user!.userId);
-
-  if (!owner) {
-    throw new ForbiddenError("Owner profile not found");
-  }
 
   const product = await productsRepository.update(
-    owner.id,
+    req.user!.userId,
     productId,
     req.body,
   );
 
   return res.status(HTTP_STATUS.OK_200).json(product);
+};
+
+// DELETE
+export const deleteProductsController = async (req: Request, res: Response) => {
+  const productId = req.params.id as string;
+
+  await productsRepository.delete(req.user!.userId, productId);
+
+  return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+};
+
+export const deleteProductsAllController = async (
+  req: Request,
+  res: Response,
+) => {
+  const { count } = await productsRepository.deleteAll(
+    req.user!.userId,
+    req.body.productsIds,
+  );
+
+  return res.sendStatus(HTTP_STATUS.OK_200).json({ deleted: count });
 };

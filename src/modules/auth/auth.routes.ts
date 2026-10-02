@@ -11,8 +11,7 @@ import {
 } from "./auth.controller";
 import {
   validateAuthParams,
-  validateLogoutParams,
-  validateRefreshParams,
+  validateRefreshTokenParams,
   validateSignUpParams,
 } from "./auth.validator";
 
@@ -20,9 +19,9 @@ export const authRouter: Router = Router();
 
 authRouter.post("/login", validateAuthParams(), loginController);
 authRouter.post("/signup", validateSignUpParams(), signupController);
-authRouter.post("/refresh", validateRefreshParams(), refreshController);
+authRouter.post("/refresh", validateRefreshTokenParams(), refreshController);
 
-authRouter.post("/logout", validateLogoutParams(), logoutController);
+authRouter.post("/logout", validateRefreshTokenParams(), logoutController);
 
 authRouter.use(authMiddleware);
 authRouter.post("/logout-all", logoutFromAllController);

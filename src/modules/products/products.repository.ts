@@ -1,14 +1,18 @@
-import { create } from "node:domain";
-
 import { prisma } from "@database";
 import { EVoucherCategory } from "@generated/prisma/enums";
 import {
-  ProductCreateInput,
   ProductUncheckedCreateInput,
   ProductUpdateInput,
 } from "@generated/prisma/models";
 
+type ProductCreateData = Omit<ProductUncheckedCreateInput, "stores"> & {
+  storeIds: string[];
+};
+
+type ProductUpdateData = ProductUpdateInput & { storeIds?: string[] };
+
 export const productsRepository = {
+  // GET
   getList(category?: EVoucherCategory) {
     return prisma.product.findMany({
       where: category ? { voucher: { category } } : {},
@@ -19,19 +23,70 @@ export const productsRepository = {
     return prisma.product.findUnique({ where: { id } });
   },
 
-  async create(ownerId: string, data: ProductUncheckedCreateInput) {
-    return prisma.$transaction(async (tx) => {
-      await tx.voucher.findFirstOrThrow({
-        where: { id: data.voucherId, ownerId },
-      });
-      return tx.product.create({ data });
+  getProductsByUserId(userId: string) {
+    return prisma.product.findMany({
+      where: {
+        voucher: { owner: { userId } },
+      },
     });
   },
 
-  async update(ownerId: string, productId: string, data: ProductUpdateInput) {
+  // CREATE
+  create(userId: string, { voucherId, ...data }: ProductCreateData) {
+    return prisma.$transaction(async (tx) => {
+      await tx.voucher.findFirstOrThrow({
+        where: { id: voucherId, owner: { userId } },
+      });
+
+      return tx.product.create({
+        data: {
+          ...data,
+          voucherId,
+          stores: { connect: data.storeIds.map((id) => ({ id, voucherId })) },
+        },
+      });
+    });
+  },
+
+  // UPDATE
+  update(
+    userId: string,
+    productId: string,
+    { storeIds, ...data }: ProductUpdateData,
+  ) {
     return prisma.product.update({
-      where: { id: productId, voucher: { ownerId } },
-      data,
+      where: { id: productId, voucher: { owner: { userId } } },
+      data: {
+        ...data,
+        ...(storeIds && {
+          stores: {
+            set: storeIds.map((id) => ({
+              id,
+              voucher: { products: { some: { id: productId } } },
+            })),
+          },
+        }),
+      },
+      include: { stores: true },
+    });
+  },
+
+  // DELETE
+  delete(userId: string, productId: string) {
+    return prisma.product.delete({
+      where: {
+        id: productId,
+        voucher: { owner: { userId } },
+      },
+    });
+  },
+
+  deleteAll(userId: string, productsIds: string[]) {
+    return prisma.product.deleteMany({
+      where: {
+        id: { in: productsIds },
+        voucher: { owner: { userId } },
+      },
     });
   },
 };

@@ -1,37 +1,51 @@
 import { Router } from "express";
 
-import { ERole } from "@generated/prisma/enums";
+import { ERole, EVoucherCategory } from "@generated/prisma/enums";
 import {
   authMiddleware,
   requireRoleMiddleware,
 } from "@middlewares/auth.middlewares";
-import { validateParamsID } from "@utils/validators/validateParams";
+import {
+  queryEnumValidator,
+  paramsIDValidator,
+} from "@utils/validators/validateParams";
 
 import {
   createProductsController,
+  deleteProductsController,
+  getMyProductsController,
   getProductsByIdController,
   getProductsListController,
   updateProductsController,
 } from "./products.controller";
 import {
   createProductValidator,
-  getProductsValidator,
   updateProductValidator,
+  validateDeleteList,
 } from "./products.validator";
 
 export const productsRouter: Router = Router();
 
 // GET
-productsRouter.get("/", getProductsValidator(), getProductsListController);
-productsRouter.get("/:id", validateParamsID("id"), getProductsByIdController);
+productsRouter.get(
+  "/",
+  queryEnumValidator("category", EVoucherCategory),
+  getProductsListController,
+);
+productsRouter.get(
+  "/my",
+  authMiddleware,
+  requireRoleMiddleware(ERole.OWNER),
+  getMyProductsController,
+);
+productsRouter.get("/:id", paramsIDValidator("id"), getProductsByIdController);
 
 // MIDDLEWARE
 productsRouter.use(authMiddleware);
 
 // CREATE
 productsRouter.post(
-  "/:id",
-  validateParamsID("id"),
+  "/",
   requireRoleMiddleware(ERole.OWNER),
   createProductValidator(),
   createProductsController,
@@ -40,10 +54,24 @@ productsRouter.post(
 // UPDATE
 productsRouter.patch(
   "/:id",
-  validateParamsID("id"),
+  paramsIDValidator("id"),
   requireRoleMiddleware(ERole.OWNER),
   updateProductValidator(),
   updateProductsController,
 );
 
 // DELETE
+productsRouter.delete(
+  "/:id",
+  paramsIDValidator("id"),
+  requireRoleMiddleware(ERole.OWNER),
+  deleteProductsController,
+);
+
+// DELETE FROM ALL
+productsRouter.delete(
+  "/",
+  validateDeleteList(),
+  requireRoleMiddleware(ERole.OWNER),
+  deleteProductsController,
+);

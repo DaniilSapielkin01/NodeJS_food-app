@@ -4,7 +4,11 @@ import { withValidation } from "@utils/validators/widthValidation";
 
 export const validateAuthParams = () =>
   withValidation([
-    body("email").trim().isEmail().withMessage(`Email must be valid email`),
+    body("email")
+      .trim()
+      .toLowerCase()
+      .isEmail()
+      .withMessage(`Email must be valid email`),
 
     body("password")
       .trim()
@@ -14,7 +18,11 @@ export const validateAuthParams = () =>
 
 export const validateSignUpParams = () =>
   withValidation([
-    body("email").trim().isEmail().withMessage("Email must be valid email"),
+    body("email")
+      .trim()
+      .toLowerCase()
+      .isEmail()
+      .withMessage("Email must be valid email"),
 
     body("password")
       .trim()
@@ -24,16 +32,7 @@ export const validateSignUpParams = () =>
     body("name").trim().notEmpty().withMessage("Name is required"),
   ]);
 
-export const validateLogoutParams = () =>
-  withValidation([
-    body("refreshToken")
-      .isString()
-      .trim()
-      .notEmpty()
-      .withMessage("refreshToken is required"),
-  ]);
-
-export const validateRefreshParams = () =>
+export const validateRefreshTokenParams = () =>
   withValidation([
     body("refreshToken")
       .isString()

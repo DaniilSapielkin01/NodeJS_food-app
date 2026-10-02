@@ -1,19 +1,31 @@
 import { NextFunction, Request, Response } from "express";
-import { matchedData, ValidationChain } from "express-validator";
+import { Location, matchedData, ValidationChain } from "express-validator";
 
 import { handleValidationErrors } from "./handleValidationErrors";
 
-const keepOnlyValidated = (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
-  req.body = matchedData(req, { locations: ["body"] });
-  next();
-};
+const keepOnlyValidated =
+  (locations: Location[]) =>
+  (req: Request, _res: Response, next: NextFunction) => {
+    if (locations.includes("body")) {
+      req.body = matchedData(req, { locations: ["body"] });
+    }
 
-export const withValidation = (rules: ValidationChain[]) => [
-  ...rules,
-  handleValidationErrors,
-  keepOnlyValidated,
-];
+    if (locations.includes("query")) {
+      Object.defineProperty(req, "query", {
+        value: matchedData(req, { locations: ["query"] }),
+        writable: true,
+        configurable: true,
+        enumerable: true,
+      });
+    }
+
+    next();
+  };
+
+export const withValidation = (rules: ValidationChain[]) => {
+  const locations = [
+    ...new Set(rules.flatMap((rule) => rule.builder.build().locations)),
+  ];
+
+  return [...rules, handleValidationErrors, keepOnlyValidated(locations)];
+};

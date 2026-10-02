@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
+import { prisma } from "@database";
 import { ForbiddenError, UnauthorizedError } from "@errors";
 import { ERole } from "@generated/prisma/enums";
 
-export const authMiddleware = (
+export const authMiddleware = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   const authHeader = req.headers.authorization;
@@ -21,18 +22,27 @@ export const authMiddleware = (
     throw new UnauthorizedError("Authorization token is missing");
   }
 
-  let payload: { userId: string; roles: ERole[] };
+  let payload: { userId: string };
 
   try {
     payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET as string) as {
       userId: string;
-      roles: ERole[];
     };
   } catch {
     throw new UnauthorizedError("Invalid or expired token");
   }
 
-  req.user = { userId: payload.userId, roles: payload.roles };
+  // !!! Check role in DB before next steps
+  const user = await prisma.user.findUnique({
+    where: { id: payload.userId },
+    select: { id: true, roles: true },
+  });
+
+  if (!user) {
+    throw new UnauthorizedError("User no longer exists");
+  }
+
+  req.user = { userId: user.id, roles: user.roles };
   next();
 };
 

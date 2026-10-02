@@ -37,6 +37,13 @@ export const authRepository = {
     });
   },
 
+  async consumeRefreshToken(token: string) {
+    const { count } = await prisma.refreshToken.deleteMany({
+      where: { token, expiresAt: { gt: new Date() } },
+    });
+    return count === 1;
+  },
+
   async deleteRefreshToken(token: string) {
     return await prisma.refreshToken.delete({ where: { token } });
   },
