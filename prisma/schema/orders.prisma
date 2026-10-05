@@ -1,7 +1,7 @@
 
 model Order {
   id String @id @default(uuid())
-  status EOrderStatus @default(PENDING)
+  status EOrderStatus @default(PENDING_PAYMENT)
   totalAmount Decimal
   deliveryAddress String
 

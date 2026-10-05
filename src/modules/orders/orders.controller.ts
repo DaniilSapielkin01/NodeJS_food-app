@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
 
+import { HTTP_STATUS } from "@utils/constants/statuses";
+
+import { ordersRepository } from "./orders.repository";
+
 // OWNER
 export const getStoreOrdersController = async (
   req: Request,
@@ -28,7 +32,11 @@ export const deliverOrderController = async (req: Request, res: Response) => {};
 export const takeOrderController = async (req: Request, res: Response) => {};
 
 // CUSTOMER
-export const createOrderController = async (req: Request, res: Response) => {};
+export const createOrderController = async (req: Request, res: Response) => {
+  const order = await ordersRepository.create(req.user!.userId, req.body);
+
+  return res.status(HTTP_STATUS.CREATED_201).json(order);
+};
 
 export const getMyOrdersController = async (req: Request, res: Response) => {};
 

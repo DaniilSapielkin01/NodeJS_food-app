@@ -23,12 +23,13 @@ enum EVehicleType {
 }
 
 enum EOrderStatus {
- PENDING 
- ACCEPTED 
- REJECTED
- READY
- TAKEN
- PICKED_UP
- DELIVERED
- CANCELLED
+  PENDING_PAYMENT // заказ создан клиентом, ждёт оплаты, овнер и курьер его не видят
+  PENDING_OWNER   // оплачен, ждёт решения овнера
+  ACCEPTED        // овнер принял заказ, готовит
+  REJECTED        // овнер отклонил заказ (после этого release оплаты)
+  READY           // заказ собран, виден курьерам
+  TAKEN           // курьер взял заказ
+  PICKED_UP       // курьер забрал заказ у магазина
+  DELIVERED       // доставлено клиенту (после этого capture оплаты)
+  CANCELLED       // отменён клиентом
 }

@@ -46,7 +46,8 @@ export type EVehicleType = (typeof EVehicleType)[keyof typeof EVehicleType]
 
 
 export const EOrderStatus = {
-  PENDING: 'PENDING',
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  PENDING_OWNER: 'PENDING_OWNER',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   READY: 'READY',

@@ -29,19 +29,22 @@ const ownerRouter: Router = Router();
 ownerRouter.use(requireRoleMiddleware(ERole.OWNER));
 
 // Заказы магазина. Проверить: магазин принадлежит этому овнеру
-// (store -> voucher -> ownerId === ownerProfile.id), иначе 403
+// (store -> voucher -> ownerId === ownerProfile.id), иначе 403.
+// Показывать статусы от PENDING_OWNER и выше, без PENDING_PAYMENT
 ownerRouter.get(
   "/store/:storeId",
   paramsIDValidator("storeId"),
   getStoreOrdersController,
 );
-// Принять заказ. Проверить: заказ из магазина овнера, статус PENDING -> ACCEPTED
+// Принять заказ. Проверить: заказ из магазина овнера,
+// статус PENDING_OWNER -> ACCEPTED
 ownerRouter.patch(
   "/:id/accept",
   paramsIDValidator("id"),
   acceptOrderController,
 );
-// Отклонить заказ. Проверить: владение, статус PENDING -> REJECTED. Потом release
+// Отклонить заказ. Проверить: владение,
+// статус PENDING_OWNER -> REJECTED. Потом release
 ownerRouter.patch(
   "/:id/reject",
   paramsIDValidator("id"),
@@ -63,7 +66,7 @@ courierRouter.get("/available", getAvailableOrdersController);
 // Все заказы этого курьера (courierId из его CourierProfile), история
 courierRouter.get("/", getCourierOrdersController);
 // Взять заказ. Проверить: статус READY и courierId === null, затем записать
-// courierId, статус READY -> TAKEN. Метод PATCH, не GET
+// courierId, статус READY -> TAKEN
 courierRouter.patch("/:id/take", paramsIDValidator("id"), takeOrderController);
 // Забрал у магазина. Проверить: заказ его, статус TAKEN -> PICKED_UP
 courierRouter.patch(
@@ -84,13 +87,15 @@ customerRouter.use(requireRoleMiddleware(ERole.CUSTOMER));
 
 // Создать заказ. Валидатор: storeId, список позиций (productId, quantity).
 // Контроллер: проверить товары, посчитать сумму на сервере, создать заказ
-// со статусом PENDING, вызвать hold
+// со статусом PENDING_PAYMENT. Пока без оплаты: сразу ставить PENDING_OWNER,
+// позже вместо этого вызов hold
 customerRouter.post("/", createOrderValidator(), createOrderController);
 // Мои заказы: where customerId === req.user.userId
 customerRouter.get("/", getMyOrdersController);
 // Один заказ. Проверить: заказ принадлежит этому юзеру, иначе 403/404
 customerRouter.get("/:id", paramsIDValidator("id"), getOrderByIdController);
-// Отмена. Проверить: заказ его, отменять можно только PENDING. Потом release
+// Отмена. Проверить: заказ его, отменять можно PENDING_PAYMENT и
+// PENDING_OWNER (пока овнер не принял), статус -> CANCELLED. Потом release
 customerRouter.patch(
   "/:id/cancel",
   paramsIDValidator("id"),
