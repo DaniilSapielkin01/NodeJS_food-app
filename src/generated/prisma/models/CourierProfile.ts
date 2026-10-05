@@ -195,6 +195,7 @@ export type CourierProfileWhereInput = {
   isOnline?: Prisma.BoolFilter<"CourierProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CourierProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  orders?: Prisma.OrderListRelationFilter
 }
 
 export type CourierProfileOrderByWithRelationInput = {
@@ -206,6 +207,7 @@ export type CourierProfileOrderByWithRelationInput = {
   isOnline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  orders?: Prisma.OrderOrderByRelationAggregateInput
 }
 
 export type CourierProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -220,6 +222,7 @@ export type CourierProfileWhereUniqueInput = Prisma.AtLeast<{
   isOnline?: Prisma.BoolFilter<"CourierProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CourierProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  orders?: Prisma.OrderListRelationFilter
 }, "id" | "userId">
 
 export type CourierProfileOrderByWithAggregationInput = {
@@ -256,6 +259,7 @@ export type CourierProfileCreateInput = {
   isOnline?: boolean
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCourierProfileInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCourierInput
 }
 
 export type CourierProfileUncheckedCreateInput = {
@@ -266,6 +270,7 @@ export type CourierProfileUncheckedCreateInput = {
   isVerified?: boolean
   isOnline?: boolean
   createdAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCourierInput
 }
 
 export type CourierProfileUpdateInput = {
@@ -276,6 +281,7 @@ export type CourierProfileUpdateInput = {
   isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCourierProfileNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCourierNestedInput
 }
 
 export type CourierProfileUncheckedUpdateInput = {
@@ -286,6 +292,7 @@ export type CourierProfileUncheckedUpdateInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCourierNestedInput
 }
 
 export type CourierProfileCreateManyInput = {
@@ -358,6 +365,22 @@ export type CourierProfileMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type CourierProfileCreateNestedOneWithoutOrdersInput = {
+  create?: Prisma.XOR<Prisma.CourierProfileCreateWithoutOrdersInput, Prisma.CourierProfileUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.CourierProfileCreateOrConnectWithoutOrdersInput
+  connect?: Prisma.CourierProfileWhereUniqueInput
+}
+
+export type CourierProfileUpdateOneWithoutOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.CourierProfileCreateWithoutOrdersInput, Prisma.CourierProfileUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.CourierProfileCreateOrConnectWithoutOrdersInput
+  upsert?: Prisma.CourierProfileUpsertWithoutOrdersInput
+  disconnect?: Prisma.CourierProfileWhereInput | boolean
+  delete?: Prisma.CourierProfileWhereInput | boolean
+  connect?: Prisma.CourierProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CourierProfileUpdateToOneWithWhereWithoutOrdersInput, Prisma.CourierProfileUpdateWithoutOrdersInput>, Prisma.CourierProfileUncheckedUpdateWithoutOrdersInput>
+}
+
 export type CourierProfileCreateNestedOneWithoutUserInput = {
   create?: Prisma.XOR<Prisma.CourierProfileCreateWithoutUserInput, Prisma.CourierProfileUncheckedCreateWithoutUserInput>
   connectOrCreate?: Prisma.CourierProfileCreateOrConnectWithoutUserInput
@@ -399,6 +422,62 @@ export type CourierProfileUpdatevehicleTypeInput = {
   push?: $Enums.EVehicleType | $Enums.EVehicleType[]
 }
 
+export type CourierProfileCreateWithoutOrdersInput = {
+  id?: string
+  phone: string
+  vehicleType?: Prisma.CourierProfileCreatevehicleTypeInput | $Enums.EVehicleType[]
+  isVerified?: boolean
+  isOnline?: boolean
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutCourierProfileInput
+}
+
+export type CourierProfileUncheckedCreateWithoutOrdersInput = {
+  id?: string
+  userId: string
+  phone: string
+  vehicleType?: Prisma.CourierProfileCreatevehicleTypeInput | $Enums.EVehicleType[]
+  isVerified?: boolean
+  isOnline?: boolean
+  createdAt?: Date | string
+}
+
+export type CourierProfileCreateOrConnectWithoutOrdersInput = {
+  where: Prisma.CourierProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.CourierProfileCreateWithoutOrdersInput, Prisma.CourierProfileUncheckedCreateWithoutOrdersInput>
+}
+
+export type CourierProfileUpsertWithoutOrdersInput = {
+  update: Prisma.XOR<Prisma.CourierProfileUpdateWithoutOrdersInput, Prisma.CourierProfileUncheckedUpdateWithoutOrdersInput>
+  create: Prisma.XOR<Prisma.CourierProfileCreateWithoutOrdersInput, Prisma.CourierProfileUncheckedCreateWithoutOrdersInput>
+  where?: Prisma.CourierProfileWhereInput
+}
+
+export type CourierProfileUpdateToOneWithWhereWithoutOrdersInput = {
+  where?: Prisma.CourierProfileWhereInput
+  data: Prisma.XOR<Prisma.CourierProfileUpdateWithoutOrdersInput, Prisma.CourierProfileUncheckedUpdateWithoutOrdersInput>
+}
+
+export type CourierProfileUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  vehicleType?: Prisma.CourierProfileUpdatevehicleTypeInput | $Enums.EVehicleType[]
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutCourierProfileNestedInput
+}
+
+export type CourierProfileUncheckedUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  vehicleType?: Prisma.CourierProfileUpdatevehicleTypeInput | $Enums.EVehicleType[]
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type CourierProfileCreateWithoutUserInput = {
   id?: string
   phone: string
@@ -406,6 +485,7 @@ export type CourierProfileCreateWithoutUserInput = {
   isVerified?: boolean
   isOnline?: boolean
   createdAt?: Date | string
+  orders?: Prisma.OrderCreateNestedManyWithoutCourierInput
 }
 
 export type CourierProfileUncheckedCreateWithoutUserInput = {
@@ -415,6 +495,7 @@ export type CourierProfileUncheckedCreateWithoutUserInput = {
   isVerified?: boolean
   isOnline?: boolean
   createdAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCourierInput
 }
 
 export type CourierProfileCreateOrConnectWithoutUserInput = {
@@ -440,6 +521,7 @@ export type CourierProfileUpdateWithoutUserInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUpdateManyWithoutCourierNestedInput
 }
 
 export type CourierProfileUncheckedUpdateWithoutUserInput = {
@@ -449,8 +531,38 @@ export type CourierProfileUncheckedUpdateWithoutUserInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCourierNestedInput
 }
 
+
+/**
+ * Count Type CourierProfileCountOutputType
+ */
+
+export type CourierProfileCountOutputType = {
+  orders: number
+}
+
+export type CourierProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  orders?: boolean | CourierProfileCountOutputTypeCountOrdersArgs
+}
+
+/**
+ * CourierProfileCountOutputType without action
+ */
+export type CourierProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CourierProfileCountOutputType
+   */
+  select?: Prisma.CourierProfileCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CourierProfileCountOutputType without action
+ */
+export type CourierProfileCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderWhereInput
+}
 
 
 export type CourierProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -462,6 +574,8 @@ export type CourierProfileSelect<ExtArgs extends runtime.Types.Extensions.Intern
   isOnline?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  orders?: boolean | Prisma.CourierProfile$ordersArgs<ExtArgs>
+  _count?: boolean | Prisma.CourierProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["courierProfile"]>
 
 export type CourierProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -499,6 +613,8 @@ export type CourierProfileSelectScalar = {
 export type CourierProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "phone" | "vehicleType" | "isVerified" | "isOnline" | "createdAt", ExtArgs["result"]["courierProfile"]>
 export type CourierProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  orders?: boolean | Prisma.CourierProfile$ordersArgs<ExtArgs>
+  _count?: boolean | Prisma.CourierProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CourierProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -511,6 +627,7 @@ export type $CourierProfilePayload<ExtArgs extends runtime.Types.Extensions.Inte
   name: "CourierProfile"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    orders: Prisma.$OrderPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -915,6 +1032,7 @@ readonly fields: CourierProfileFieldRefs;
 export interface Prisma__CourierProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  orders<T extends Prisma.CourierProfile$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CourierProfile$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1349,6 +1467,30 @@ export type CourierProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many CourierProfiles to delete.
    */
   limit?: number
+}
+
+/**
+ * CourierProfile.orders
+ */
+export type CourierProfile$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Order
+   */
+  select?: Prisma.OrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Order
+   */
+  omit?: Prisma.OrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderInclude<ExtArgs> | null
+  where?: Prisma.OrderWhereInput
+  orderBy?: Prisma.OrderOrderByWithRelationInput | Prisma.OrderOrderByWithRelationInput[]
+  cursor?: Prisma.OrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
 }
 
 /**

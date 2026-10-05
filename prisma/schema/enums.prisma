@@ -21,3 +21,14 @@ enum EVehicleType {
   CAR
   ON_FOOT
 }
+
+enum EOrderStatus {
+ PENDING 
+ ACCEPTED 
+ REJECTED
+ READY
+ TAKEN
+ PICKED_UP
+ DELIVERED
+ CANCELLED
+}

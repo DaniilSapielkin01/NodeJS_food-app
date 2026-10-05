@@ -7,7 +7,9 @@ model Store {
   voucherId String
   voucher Voucher @relation(fields: [voucherId], references: [id], onDelete: Cascade)
   products Product[]
-  createdAt DateTime @default(now())
+  orders Order[]
 
+  createdAt DateTime @default(now())
+  
   @@index([voucherId])
 }

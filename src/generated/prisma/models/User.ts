@@ -29,6 +29,7 @@ export type UserMinAggregateOutputType = {
   email: string | null
   password: string | null
   name: string | null
+  homeDeliveryAddress: string | null
   createdAt: Date | null
 }
 
@@ -37,6 +38,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   password: string | null
   name: string | null
+  homeDeliveryAddress: string | null
   createdAt: Date | null
 }
 
@@ -45,6 +47,7 @@ export type UserCountAggregateOutputType = {
   email: number
   password: number
   name: number
+  homeDeliveryAddress: number
   roles: number
   createdAt: number
   _all: number
@@ -56,6 +59,7 @@ export type UserMinAggregateInputType = {
   email?: true
   password?: true
   name?: true
+  homeDeliveryAddress?: true
   createdAt?: true
 }
 
@@ -64,6 +68,7 @@ export type UserMaxAggregateInputType = {
   email?: true
   password?: true
   name?: true
+  homeDeliveryAddress?: true
   createdAt?: true
 }
 
@@ -72,6 +77,7 @@ export type UserCountAggregateInputType = {
   email?: true
   password?: true
   name?: true
+  homeDeliveryAddress?: true
   roles?: true
   createdAt?: true
   _all?: true
@@ -154,6 +160,7 @@ export type UserGroupByOutputType = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress: string | null
   roles: $Enums.ERole[]
   createdAt: Date
   _count: UserCountAggregateOutputType | null
@@ -184,8 +191,10 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringFilter<"User"> | string
+  homeDeliveryAddress?: Prisma.StringNullableFilter<"User"> | string | null
   roles?: Prisma.EnumERoleNullableListFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  orders?: Prisma.OrderListRelationFilter
   refreshToken?: Prisma.RefreshTokenListRelationFilter
   ownerProfile?: Prisma.XOR<Prisma.OwnerProfileNullableScalarRelationFilter, Prisma.OwnerProfileWhereInput> | null
   courierProfile?: Prisma.XOR<Prisma.CourierProfileNullableScalarRelationFilter, Prisma.CourierProfileWhereInput> | null
@@ -196,8 +205,10 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  homeDeliveryAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   roles?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  orders?: Prisma.OrderOrderByRelationAggregateInput
   refreshToken?: Prisma.RefreshTokenOrderByRelationAggregateInput
   ownerProfile?: Prisma.OwnerProfileOrderByWithRelationInput
   courierProfile?: Prisma.CourierProfileOrderByWithRelationInput
@@ -211,8 +222,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   password?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringFilter<"User"> | string
+  homeDeliveryAddress?: Prisma.StringNullableFilter<"User"> | string | null
   roles?: Prisma.EnumERoleNullableListFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  orders?: Prisma.OrderListRelationFilter
   refreshToken?: Prisma.RefreshTokenListRelationFilter
   ownerProfile?: Prisma.XOR<Prisma.OwnerProfileNullableScalarRelationFilter, Prisma.OwnerProfileWhereInput> | null
   courierProfile?: Prisma.XOR<Prisma.CourierProfileNullableScalarRelationFilter, Prisma.CourierProfileWhereInput> | null
@@ -223,6 +236,7 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  homeDeliveryAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   roles?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -238,6 +252,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringWithAggregatesFilter<"User"> | string
+  homeDeliveryAddress?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   roles?: Prisma.EnumERoleNullableListFilter<"User">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -247,8 +262,10 @@ export type UserCreateInput = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
   refreshToken?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   ownerProfile?: Prisma.OwnerProfileCreateNestedOneWithoutUserInput
   courierProfile?: Prisma.CourierProfileCreateNestedOneWithoutUserInput
@@ -259,8 +276,10 @@ export type UserUncheckedCreateInput = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
   refreshToken?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   ownerProfile?: Prisma.OwnerProfileUncheckedCreateNestedOneWithoutUserInput
   courierProfile?: Prisma.CourierProfileUncheckedCreateNestedOneWithoutUserInput
@@ -271,8 +290,10 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
   refreshToken?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   ownerProfile?: Prisma.OwnerProfileUpdateOneWithoutUserNestedInput
   courierProfile?: Prisma.CourierProfileUpdateOneWithoutUserNestedInput
@@ -283,8 +304,10 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
   refreshToken?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   ownerProfile?: Prisma.OwnerProfileUncheckedUpdateOneWithoutUserNestedInput
   courierProfile?: Prisma.CourierProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -295,6 +318,7 @@ export type UserCreateManyInput = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
 }
@@ -304,6 +328,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -313,8 +338,14 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type EnumERoleNullableListFilter<$PrismaModel = never> = {
@@ -330,6 +361,7 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  homeDeliveryAddress?: Prisma.SortOrder
   roles?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -339,6 +371,7 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  homeDeliveryAddress?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -347,12 +380,22 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  homeDeliveryAddress?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
-export type UserScalarRelationFilter = {
-  is?: Prisma.UserWhereInput
-  isNot?: Prisma.UserWhereInput
+export type UserCreateNestedOneWithoutOrdersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrdersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrdersInput
+  upsert?: Prisma.UserUpsertWithoutOrdersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOrdersInput, Prisma.UserUpdateWithoutOrdersInput>, Prisma.UserUncheckedUpdateWithoutOrdersInput>
 }
 
 export type UserCreaterolesInput = {
@@ -406,13 +449,83 @@ export type UserUpdateOneRequiredWithoutRefreshTokenNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokenInput, Prisma.UserUpdateWithoutRefreshTokenInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokenInput>
 }
 
+export type UserCreateWithoutOrdersInput = {
+  id?: string
+  email: string
+  password: string
+  name: string
+  homeDeliveryAddress?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
+  createdAt?: Date | string
+  refreshToken?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  ownerProfile?: Prisma.OwnerProfileCreateNestedOneWithoutUserInput
+  courierProfile?: Prisma.CourierProfileCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOrdersInput = {
+  id?: string
+  email: string
+  password: string
+  name: string
+  homeDeliveryAddress?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
+  createdAt?: Date | string
+  refreshToken?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  ownerProfile?: Prisma.OwnerProfileUncheckedCreateNestedOneWithoutUserInput
+  courierProfile?: Prisma.CourierProfileUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOrdersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+}
+
+export type UserUpsertWithoutOrdersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOrdersInput, Prisma.UserUncheckedUpdateWithoutOrdersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOrdersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOrdersInput, Prisma.UserUncheckedUpdateWithoutOrdersInput>
+}
+
+export type UserUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshToken?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  ownerProfile?: Prisma.OwnerProfileUpdateOneWithoutUserNestedInput
+  courierProfile?: Prisma.CourierProfileUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshToken?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  ownerProfile?: Prisma.OwnerProfileUncheckedUpdateOneWithoutUserNestedInput
+  courierProfile?: Prisma.CourierProfileUncheckedUpdateOneWithoutUserNestedInput
+}
+
 export type UserCreateWithoutOwnerProfileInput = {
   id?: string
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
   refreshToken?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   courierProfile?: Prisma.CourierProfileCreateNestedOneWithoutUserInput
 }
@@ -422,8 +535,10 @@ export type UserUncheckedCreateWithoutOwnerProfileInput = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
   refreshToken?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   courierProfile?: Prisma.CourierProfileUncheckedCreateNestedOneWithoutUserInput
 }
@@ -449,8 +564,10 @@ export type UserUpdateWithoutOwnerProfileInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
   refreshToken?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   courierProfile?: Prisma.CourierProfileUpdateOneWithoutUserNestedInput
 }
@@ -460,8 +577,10 @@ export type UserUncheckedUpdateWithoutOwnerProfileInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
   refreshToken?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   courierProfile?: Prisma.CourierProfileUncheckedUpdateOneWithoutUserNestedInput
 }
@@ -471,8 +590,10 @@ export type UserCreateWithoutCourierProfileInput = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
   refreshToken?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   ownerProfile?: Prisma.OwnerProfileCreateNestedOneWithoutUserInput
 }
@@ -482,8 +603,10 @@ export type UserUncheckedCreateWithoutCourierProfileInput = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
   refreshToken?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   ownerProfile?: Prisma.OwnerProfileUncheckedCreateNestedOneWithoutUserInput
 }
@@ -509,8 +632,10 @@ export type UserUpdateWithoutCourierProfileInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
   refreshToken?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   ownerProfile?: Prisma.OwnerProfileUpdateOneWithoutUserNestedInput
 }
@@ -520,8 +645,10 @@ export type UserUncheckedUpdateWithoutCourierProfileInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
   refreshToken?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   ownerProfile?: Prisma.OwnerProfileUncheckedUpdateOneWithoutUserNestedInput
 }
@@ -531,8 +658,10 @@ export type UserCreateWithoutRefreshTokenInput = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
   ownerProfile?: Prisma.OwnerProfileCreateNestedOneWithoutUserInput
   courierProfile?: Prisma.CourierProfileCreateNestedOneWithoutUserInput
 }
@@ -542,8 +671,10 @@ export type UserUncheckedCreateWithoutRefreshTokenInput = {
   email: string
   password: string
   name: string
+  homeDeliveryAddress?: string | null
   roles?: Prisma.UserCreaterolesInput | $Enums.ERole[]
   createdAt?: Date | string
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
   ownerProfile?: Prisma.OwnerProfileUncheckedCreateNestedOneWithoutUserInput
   courierProfile?: Prisma.CourierProfileUncheckedCreateNestedOneWithoutUserInput
 }
@@ -569,8 +700,10 @@ export type UserUpdateWithoutRefreshTokenInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
   ownerProfile?: Prisma.OwnerProfileUpdateOneWithoutUserNestedInput
   courierProfile?: Prisma.CourierProfileUpdateOneWithoutUserNestedInput
 }
@@ -580,8 +713,10 @@ export type UserUncheckedUpdateWithoutRefreshTokenInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  homeDeliveryAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.UserUpdaterolesInput | $Enums.ERole[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
   ownerProfile?: Prisma.OwnerProfileUncheckedUpdateOneWithoutUserNestedInput
   courierProfile?: Prisma.CourierProfileUncheckedUpdateOneWithoutUserNestedInput
 }
@@ -592,10 +727,12 @@ export type UserUncheckedUpdateWithoutRefreshTokenInput = {
  */
 
 export type UserCountOutputType = {
+  orders: number
   refreshToken: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  orders?: boolean | UserCountOutputTypeCountOrdersArgs
   refreshToken?: boolean | UserCountOutputTypeCountRefreshTokenArgs
 }
 
@@ -612,6 +749,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountRefreshTokenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.RefreshTokenWhereInput
 }
@@ -622,8 +766,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   password?: boolean
   name?: boolean
+  homeDeliveryAddress?: boolean
   roles?: boolean
   createdAt?: boolean
+  orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
   refreshToken?: boolean | Prisma.User$refreshTokenArgs<ExtArgs>
   ownerProfile?: boolean | Prisma.User$ownerProfileArgs<ExtArgs>
   courierProfile?: boolean | Prisma.User$courierProfileArgs<ExtArgs>
@@ -635,6 +781,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   password?: boolean
   name?: boolean
+  homeDeliveryAddress?: boolean
   roles?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -644,6 +791,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   password?: boolean
   name?: boolean
+  homeDeliveryAddress?: boolean
   roles?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -653,12 +801,14 @@ export type UserSelectScalar = {
   email?: boolean
   password?: boolean
   name?: boolean
+  homeDeliveryAddress?: boolean
   roles?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "roles" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "homeDeliveryAddress" | "roles" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
   refreshToken?: boolean | Prisma.User$refreshTokenArgs<ExtArgs>
   ownerProfile?: boolean | Prisma.User$ownerProfileArgs<ExtArgs>
   courierProfile?: boolean | Prisma.User$courierProfileArgs<ExtArgs>
@@ -670,6 +820,7 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    orders: Prisma.$OrderPayload<ExtArgs>[]
     refreshToken: Prisma.$RefreshTokenPayload<ExtArgs>[]
     ownerProfile: Prisma.$OwnerProfilePayload<ExtArgs> | null
     courierProfile: Prisma.$CourierProfilePayload<ExtArgs> | null
@@ -679,6 +830,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     password: string
     name: string
+    homeDeliveryAddress: string | null
     roles: $Enums.ERole[]
     createdAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1075,6 +1227,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  orders<T extends Prisma.User$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refreshToken<T extends Prisma.User$refreshTokenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ownerProfile<T extends Prisma.User$ownerProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownerProfileArgs<ExtArgs>>): Prisma.Prisma__OwnerProfileClient<runtime.Types.Result.GetResult<Prisma.$OwnerProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   courierProfile<T extends Prisma.User$courierProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$courierProfileArgs<ExtArgs>>): Prisma.Prisma__CourierProfileClient<runtime.Types.Result.GetResult<Prisma.$CourierProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -1111,6 +1264,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
+  readonly homeDeliveryAddress: Prisma.FieldRef<"User", 'String'>
   readonly roles: Prisma.FieldRef<"User", 'ERole[]'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -1503,6 +1657,30 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.orders
+ */
+export type User$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Order
+   */
+  select?: Prisma.OrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Order
+   */
+  omit?: Prisma.OrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderInclude<ExtArgs> | null
+  where?: Prisma.OrderWhereInput
+  orderBy?: Prisma.OrderOrderByWithRelationInput | Prisma.OrderOrderByWithRelationInput[]
+  cursor?: Prisma.OrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
 }
 
 /**

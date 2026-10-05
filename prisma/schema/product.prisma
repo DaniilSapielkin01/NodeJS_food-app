@@ -3,13 +3,15 @@ model Product {
   name String @unique
   image String
   description String
-  price String
+  price Decimal
   discount String
   inStock Boolean @default(true)
   count Int @default(0)
   voucherId String
   voucher Voucher @relation(fields: [voucherId], references: [id], onDelete: Cascade)
   stores Store[]
+  orderItems OrderItem[]
+
   createdAt DateTime @default(now()) 
 
   @@index([voucherId])

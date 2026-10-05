@@ -43,3 +43,17 @@ export const EVehicleType = {
 } as const
 
 export type EVehicleType = (typeof EVehicleType)[keyof typeof EVehicleType]
+
+
+export const EOrderStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  READY: 'READY',
+  TAKEN: 'TAKEN',
+  PICKED_UP: 'PICKED_UP',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type EOrderStatus = (typeof EOrderStatus)[keyof typeof EOrderStatus]
