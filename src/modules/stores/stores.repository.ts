@@ -7,7 +7,7 @@ import {
 export const storesRepository = {
   // GET,
   getList() {
-    return prisma.store;
+    return prisma.store.findMany();
   },
 
   getById(id: string) {
@@ -19,6 +19,12 @@ export const storesRepository = {
       where: {
         voucher: { owner: { userId } },
       },
+    });
+  },
+
+  getMyById(userId: string, storeId: string) {
+    return prisma.store.findFirstOrThrow({
+      where: { id: storeId, voucher: { owner: { userId } } },
     });
   },
 
