@@ -32,7 +32,7 @@ export const productsRepository = {
   },
 
   // CREATE
-  create(userId: string, { voucherId, ...data }: ProductCreateData) {
+  create(userId: string, { voucherId, storeIds, ...data }: ProductCreateData) {
     return prisma.$transaction(async (tx) => {
       await tx.voucher.findFirstOrThrow({
         where: { id: voucherId, owner: { userId } },
@@ -42,7 +42,7 @@ export const productsRepository = {
         data: {
           ...data,
           voucherId,
-          stores: { connect: data.storeIds.map((id) => ({ id, voucherId })) },
+          stores: { connect: storeIds.map((id) => ({ id, voucherId })) },
         },
       });
     });
@@ -54,20 +54,22 @@ export const productsRepository = {
     productId: string,
     { storeIds, ...data }: ProductUpdateData,
   ) {
-    return prisma.product.update({
-      where: { id: productId, voucher: { owner: { userId } } },
-      data: {
-        ...data,
-        ...(storeIds && {
-          stores: {
-            set: storeIds.map((id) => ({
-              id,
-              voucher: { products: { some: { id: productId } } },
-            })),
-          },
-        }),
-      },
-      include: { stores: true },
+    return prisma.$transaction(async (tx) => {
+      const { voucherId } = await tx.product.findFirstOrThrow({
+        where: { id: productId, voucher: { owner: { userId } } },
+        select: { voucherId: true },
+      });
+
+      return tx.product.update({
+        where: { id: productId },
+        data: {
+          ...data,
+          ...(storeIds && {
+            stores: { set: storeIds.map((id) => ({ id, voucherId })) },
+          }),
+        },
+        include: { stores: true },
+      });
     });
   },
 

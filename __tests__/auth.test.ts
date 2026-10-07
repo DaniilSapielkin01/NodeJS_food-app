@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import request from "supertest";
 
 import { prisma } from "@database";
@@ -125,6 +126,49 @@ describe("POST /auth/logout", () => {
     await request(app).post("/auth/logout").send({ refreshToken });
     const res = await request(app).post("/auth/refresh").send({ refreshToken });
     expect(res.status).toBe(401);
+  });
+
+  it("rejects an old refresh token after rotation", async () => {
+    const { refreshToken } = await registerAndLogin();
+
+    const first = await request(app)
+      .post("/auth/refresh")
+      .send({ refreshToken });
+    expect(first.status).toBe(200);
+
+    const second = await request(app)
+      .post("/auth/refresh")
+      .send({ refreshToken });
+    expect(second.status).toBe(401);
+  });
+
+  it("returns 401 for an expired refresh token", async () => {
+    await signup();
+    const created = await prisma.user.findFirstOrThrow({
+      where: { email: user.email },
+    });
+    const expired = jwt.sign(
+      { userId: created.id },
+      process.env.JWT_REFRESH_SECRET as string,
+      { expiresIn: -10 },
+    );
+
+    const res = await request(app)
+      .post("/auth/refresh")
+      .send({ refreshToken: expired });
+    expect(res.status).toBe(401);
+  });
+
+  it("lets only one of two parallel refreshes succeed", async () => {
+    const { refreshToken } = await registerAndLogin();
+
+    const results = await Promise.all([
+      request(app).post("/auth/refresh").send({ refreshToken }),
+      request(app).post("/auth/refresh").send({ refreshToken }),
+    ]);
+
+    const statuses = results.map((r) => r.status).sort();
+    expect(statuses).toEqual([200, 401]);
   });
 });
 

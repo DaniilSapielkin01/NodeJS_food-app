@@ -12,7 +12,7 @@ export const getStoresController = async (req: Request, res: Response) => {
 };
 
 export const getStoresByIdController = async (req: Request, res: Response) => {
-  const product = storesRepository.getById(req.query!.id as string);
+  const product = await storesRepository.getById(req.params!.id as string);
 
   return res.status(HTTP_STATUS.OK_200).json(product);
 };

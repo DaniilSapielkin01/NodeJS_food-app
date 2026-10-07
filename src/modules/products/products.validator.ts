@@ -6,12 +6,11 @@ import { withValidation } from "@utils/validators/widthValidation";
 export const createProductValidator = () =>
   withValidation([
     body("voucherId").isUUID().withMessage("voucherId must be a valid UUID"),
+
     body("storeIds")
       .isArray({ min: 1 })
-      .withMessage("storeIds must be an array")
-      .bail()
-      .isUUID()
-      .withMessage("storeId must be a valid UUID"),
+      .withMessage("storeIds must be an array"),
+    body("storeIds.*").isUUID().withMessage("storeId must be a valid UUID"),
 
     body("name").trim().notEmpty().withMessage("name is required"),
 
@@ -47,11 +46,9 @@ export const updateProductValidator = () =>
   withValidation([
     body("storeIds")
       .optional()
-      .isArray()
-      .withMessage("storeIds must be an array")
-      .bail()
-      .isUUID()
-      .withMessage("storeId must be a valid UUID"),
+      .isArray({ min: 1 })
+      .withMessage("storeIds must be an array"),
+    body("storeIds.*").isUUID().withMessage("storeId must be a valid UUID"),
 
     body("name")
       .optional()

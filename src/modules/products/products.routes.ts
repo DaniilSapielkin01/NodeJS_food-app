@@ -6,12 +6,13 @@ import {
   requireRoleMiddleware,
 } from "@middlewares/auth.middlewares";
 import {
-  queryEnumValidator,
   paramsIDValidator,
+  queryEnumValidator,
 } from "@utils/validators/validateParams";
 
 import {
   createProductsController,
+  deleteProductsAllController,
   deleteProductsController,
   getMyProductsController,
   getProductsByIdController,
@@ -73,5 +74,5 @@ productsRouter.delete(
   "/",
   validateDeleteList(),
   requireRoleMiddleware(ERole.OWNER),
-  deleteProductsController,
+  deleteProductsAllController,
 );

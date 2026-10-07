@@ -1,5 +1,3 @@
-import { UUID } from "crypto";
-
 import { prisma } from "@database";
 import {
   VoucherUncheckedCreateInput,

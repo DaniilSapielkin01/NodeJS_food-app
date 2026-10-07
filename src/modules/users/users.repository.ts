@@ -26,6 +26,7 @@ export const userRepository = {
     return await prisma.user.update({
       where: { id },
       data,
+      omit: { password: true },
     });
   },
 
