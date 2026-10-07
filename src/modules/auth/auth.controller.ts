@@ -13,13 +13,13 @@ export const loginController = async (req: Request, res: Response) => {
   const user = await authRepository.login(body);
 
   if (!user) {
-    throw new BadRequestError("User not found");
+    throw new UnauthorizedError("Invalid credentials");
   }
 
   const isPasswordValid = await bcrypt.compare(body.password, user.password);
 
   if (!isPasswordValid) {
-    throw new BadRequestError("Invalid password");
+    throw new UnauthorizedError("Invalid credentials");
   }
 
   const tokens = await issueTokens(user.id);

@@ -6,25 +6,32 @@ import { app } from "./app";
 
 const PORT = process.env.PORT || 5002;
 
-const startAp = async () => {
-  const startApp = async () => {
-    try {
-      await prisma.$connect();
-      console.log("✅ Database connected");
-    } catch (error) {
-      console.error("❌ Failed to connect to database:", error);
-      process.exit(1);
-    }
+import { logger } from "@utils/logger/logger";
 
-    try {
-      app.listen(PORT, () => console.log("Server started on PORT:", PORT));
-    } catch (error) {
-      console.error("❌ Failed to start server:", error);
-      process.exit(1);
-    }
-  };
+const startApp = async () => {
+  try {
+    await prisma.$connect();
+    logger.info("Database connected");
+  } catch (err) {
+    logger.fatal({ err }, "Failed to connect to database");
+    process.exit(1);
+  }
 
-  startApp();
+  try {
+    app.listen(PORT, () => logger.info({ port: PORT }, "Server started"));
+  } catch (err) {
+    logger.fatal({ err }, "Failed to start server");
+    process.exit(1);
+  }
 };
 
-startAp();
+process.on("unhandledRejection", (reason) => {
+  logger.error({ err: reason }, "unhandledRejection");
+});
+
+process.on("uncaughtException", (err) => {
+  logger.fatal({ err }, "uncaughtException");
+  process.exit(1);
+});
+
+startApp();

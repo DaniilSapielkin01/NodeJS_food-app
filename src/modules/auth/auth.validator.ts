@@ -10,10 +10,7 @@ export const validateAuthParams = () =>
       .isEmail()
       .withMessage(`Email must be valid email`),
 
-    body("password")
-      .trim()
-      .isLength({ min: 4, max: 8 })
-      .withMessage(`Password must be min 4 character and max 8`),
+    body("password").isString().notEmpty().withMessage("Password is required"),
   ]);
 
 export const validateSignUpParams = () =>

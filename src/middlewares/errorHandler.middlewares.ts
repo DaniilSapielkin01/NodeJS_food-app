@@ -15,7 +15,7 @@ export const errorHandler = (
     });
   }
 
-  console.error(err);
+  req.log.error({ err }, "Unhandled error");
 
   return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR_500).json({
     error: "Something went wrong",

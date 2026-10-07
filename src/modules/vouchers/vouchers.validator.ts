@@ -9,10 +9,7 @@ export const createVoucherValidator = () =>
     body("category").toUpperCase().isIn(Object.values(EVoucherCategory)),
 
     body("image").optional().trim().notEmpty().withMessage("image is required"),
-    body("description")
-      .optional()
-      .trim()
-      .withMessage("description is required"),
+    body("name").trim().notEmpty().withMessage("Name is required"),
   ]);
 
 export const updateVoucherValidator = () =>

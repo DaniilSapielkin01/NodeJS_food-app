@@ -1,12 +1,11 @@
 import { prisma } from "@database";
 import {
-  IBodyLogin,
-  IBodySignup,
-  ISaveRefreshToken,
-} from "@src/types/auth.types";
+  RefreshTokenUncheckedCreateInput,
+  UserUncheckedCreateInput,
+} from "@generated/prisma/models";
 
 export const authRepository = {
-  async login(data: IBodyLogin) {
+  async login(data: Pick<UserUncheckedCreateInput, "email">) {
     return await prisma.user.findUnique({
       where: {
         email: data.email,
@@ -14,7 +13,7 @@ export const authRepository = {
     });
   },
 
-  async signup(data: IBodySignup) {
+  async signup(data: UserUncheckedCreateInput) {
     return await prisma.user.create({ data });
   },
 
@@ -26,7 +25,7 @@ export const authRepository = {
     return await prisma.refreshToken.deleteMany({ where: { userId } });
   },
 
-  async saveRefreshToken(data: ISaveRefreshToken) {
+  async saveRefreshToken(data: RefreshTokenUncheckedCreateInput) {
     return await prisma.refreshToken.create({ data });
   },
 
