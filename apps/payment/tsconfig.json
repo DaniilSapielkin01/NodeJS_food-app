@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    // "rootDir": "./src",
+
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2022",
+    "esModuleInterop": true,
+    "types": ["node", "jest"],
+    "sourceMap": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "strict": true,
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+    "noEmit": true,
+    "paths": {
+      "@utils": ["./src/utils"],
+      "@utils/*": ["./src/utils/*"],
+      "@modules": ["./src/modules"],
+      "@modules/*": ["./src/modules/*"],
+      "@database": ["./src/database"],
+      "@database/*": ["./src/database/*"],
+      "@middlewares": ["./src/middlewares"],
+      "@middlewares/*": ["./src/middlewares/*"],
+      "@config": ["./src/config"],
+      "@config/*": ["./src/config/*"],
+      "@src/types": ["./src/types"],
+      "@src/types/*": ["./src/types/*"],
+      "@errors": ["./src/errors"],
+      "@errors/*": ["./src/errors/*"],
+      "@generated": ["./src/generated"],
+      "@generated/*": ["./src/generated/*"]
+    }
+  },
+  "include": ["src/**/*", "__tests__/**/*"]
+}

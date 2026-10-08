@@ -1,0 +1,4 @@
+{
+  "extends": "../../apps/marketplace/tsconfig.json",
+  "include": ["src"]
+}

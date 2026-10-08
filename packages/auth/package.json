@@ -1,0 +1,12 @@
+{
+  "name": "@packages/auth",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@packages/errors": "workspace:*",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  }
+}

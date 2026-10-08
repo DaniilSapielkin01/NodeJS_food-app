@@ -1,0 +1,16 @@
+{
+  "name": "@packages/middlewares",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@packages/constants": "workspace:*",
+    "@packages/errors": "workspace:*",
+    "@packages/logger": "workspace:*",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "pino-http": "^11.0.0"
+  }
+}
