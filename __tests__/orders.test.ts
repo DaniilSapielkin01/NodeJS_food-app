@@ -16,7 +16,7 @@ const OWNER = "/orders/owner";
 const COURIER = "/orders/courier";
 
 const voucherData = {
-  name: "Test voucher",
+  name: `Test voucher ${randomUUID()}`,
   image: "https://example.com/voucher.png",
   description: "Test voucher description",
 };
@@ -43,7 +43,12 @@ const setup = async () => {
     where: { userId: owner.user.id },
   });
   const voucher = await prisma.voucher.create({
-    data: { ...voucherData, category: category!, ownerId: profile.id },
+    data: {
+      ...voucherData,
+      name: `Test voucher ${randomUUID()}`,
+      category: category!,
+      ownerId: profile.id,
+    },
   });
   const store = await prisma.store.create({
     data: {
@@ -55,6 +60,7 @@ const setup = async () => {
   const product = await prisma.product.create({
     data: {
       ...productData,
+      name: `Test product ${randomUUID()}`,
       voucherId: voucher.id,
       stores: { connect: [{ id: store.id }] },
     },

@@ -11,7 +11,7 @@ export const storesRepository = {
   },
 
   getById(id: string) {
-    return prisma.store.findUnique({ where: { id } });
+    return prisma.store.findFirstOrThrow({ where: { id } });
   },
 
   getMy(userId: string) {

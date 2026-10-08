@@ -10,6 +10,10 @@ export const createVoucherValidator = () =>
 
     body("image").optional().trim().notEmpty().withMessage("image is required"),
     body("name").trim().notEmpty().withMessage("Name is required"),
+    body("description")
+      .trim()
+      .notEmpty()
+      .withMessage("description is required"),
   ]);
 
 export const updateVoucherValidator = () =>

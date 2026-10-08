@@ -1,5 +1,5 @@
 import { prisma } from "@database";
-import { CourierProfile, OwnerProfile, Prisma } from "@generated/prisma/client";
+import { Prisma } from "@generated/prisma/client";
 import { ERole } from "@generated/prisma/enums";
 
 export const userRepository = {

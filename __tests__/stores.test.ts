@@ -3,45 +3,19 @@ import { randomUUID } from "node:crypto";
 import request from "supertest";
 
 import { prisma } from "@database";
-import { EVoucherCategory } from "@generated/prisma/enums";
 
 import { app } from "../src/app";
-import { createCustomer, createOwner } from "./helpers";
+import {
+  authHelper,
+  cleanDb,
+  createCustomer,
+  createOwner,
+  createVoucher,
+  setupOwnerVoucherStore,
+  storeData,
+} from "./helpers";
 
-const category = Object.values(EVoucherCategory)[0];
-const storeData = { name: "Test store", address: "Test street 1" };
-
-const auth = (token: string) => ({ Authorization: `Bearer ${token}` });
-
-const createVoucher = async (token: string) => {
-  const res = await request(app)
-    .post("/vouchers")
-    .set(auth(token))
-    .send({ name: "Test voucher", category });
-  return res.body as { id: string };
-};
-
-const createStore = async (token: string, voucherId: string) => {
-  const res = await request(app)
-    .post("/stores")
-    .set(auth(token))
-    .send({ ...storeData, voucherId });
-  return res.body as { id: string };
-};
-
-// owner + own voucher + own store
-const setup = async () => {
-  const owner = await createOwner();
-  const voucher = await createVoucher(owner.accessToken);
-  const store = await createStore(owner.accessToken, voucher.id);
-  return { owner, voucher, store };
-};
-
-beforeEach(async () => {
-  await prisma.store.deleteMany();
-  await prisma.voucher.deleteMany();
-  await prisma.user.deleteMany();
-});
+beforeEach(cleanDb);
 
 afterAll(async () => {
   await prisma.$disconnect();
@@ -49,7 +23,7 @@ afterAll(async () => {
 
 describe("GET /stores", () => {
   it("returns the list without authorization", async () => {
-    await setup();
+    await setupOwnerVoucherStore();
 
     const res = await request(app).get("/stores");
 
@@ -68,17 +42,17 @@ describe("GET /stores/my", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .get("/stores/my")
-      .set(auth(customer.accessToken));
+      .set(authHelper(customer.accessToken));
     expect(res.status).toBe(403);
   });
 
   it("returns only own stores", async () => {
-    const { owner, store } = await setup();
-    await setup(); // another owner with their own store
+    const { owner, store } = await setupOwnerVoucherStore();
+    await setupOwnerVoucherStore(); // another owner with their own store
 
     const res = await request(app)
       .get("/stores/my")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(1);
@@ -88,7 +62,7 @@ describe("GET /stores/my", () => {
 
 describe("GET /stores/:id", () => {
   it("returns a store without authorization", async () => {
-    const { store } = await setup();
+    const { store } = await setupOwnerVoucherStore();
 
     const res = await request(app).get(`/stores/${store.id}`);
 
@@ -114,7 +88,7 @@ describe("POST /stores", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/stores")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ ...storeData, voucherId: randomUUID() });
     expect(res.status).toBe(403);
   });
@@ -125,7 +99,7 @@ describe("POST /stores", () => {
 
     const res = await request(app)
       .post("/stores")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ ...storeData, voucherId: voucher.id });
 
     expect(res.status).toBe(201);
@@ -140,7 +114,7 @@ describe("POST /stores", () => {
 
     const res = await request(app)
       .post("/stores")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ ...storeData, voucherId: voucher.id });
 
     expect(res.status).toBe(404);
@@ -151,7 +125,7 @@ describe("POST /stores", () => {
     const owner = await createOwner();
     const res = await request(app)
       .post("/stores")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ ...storeData, voucherId: "not-a-uuid" });
     expect(res.status).toBe(400);
   });
@@ -161,7 +135,7 @@ describe("POST /stores", () => {
     const voucher = await createVoucher(owner.accessToken);
     const res = await request(app)
       .post("/stores")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ address: storeData.address, voucherId: voucher.id });
     expect(res.status).toBe(400);
   });
@@ -171,7 +145,7 @@ describe("POST /stores", () => {
     const voucher = await createVoucher(owner.accessToken);
     const res = await request(app)
       .post("/stores")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: storeData.name, voucherId: voucher.id });
     expect(res.status).toBe(400);
   });
@@ -179,7 +153,7 @@ describe("POST /stores", () => {
 
 describe("PATCH /stores/:id", () => {
   it("returns 401 without an access token", async () => {
-    const { store } = await setup();
+    const { store } = await setupOwnerVoucherStore();
     const res = await request(app)
       .patch(`/stores/${store.id}`)
       .send({ name: "New" });
@@ -187,22 +161,22 @@ describe("PATCH /stores/:id", () => {
   });
 
   it("returns 403 for a customer", async () => {
-    const { store } = await setup();
+    const { store } = await setupOwnerVoucherStore();
     const customer = await createCustomer();
 
     const res = await request(app)
       .patch(`/stores/${store.id}`)
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ name: "New" });
     expect(res.status).toBe(403);
   });
 
   it("updates own store", async () => {
-    const { owner, store } = await setup();
+    const { owner, store } = await setupOwnerVoucherStore();
 
     const res = await request(app)
       .patch(`/stores/${store.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: "New name", address: "New street 2" });
 
     expect(res.status).toBe(200);
@@ -211,12 +185,12 @@ describe("PATCH /stores/:id", () => {
   });
 
   it("returns 404 when updating another owner's store", async () => {
-    const { store } = await setup();
+    const { store } = await setupOwnerVoucherStore();
     const other = await createOwner();
 
     const res = await request(app)
       .patch(`/stores/${store.id}`)
-      .set(auth(other.accessToken))
+      .set(authHelper(other.accessToken))
       .send({ name: "Hacked" });
 
     expect(res.status).toBe(404);
@@ -228,16 +202,16 @@ describe("PATCH /stores/:id", () => {
     const owner = await createOwner();
     const res = await request(app)
       .patch(`/stores/${randomUUID()}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: "New" });
     expect(res.status).toBe(404);
   });
 
   it("returns 400 for an empty name", async () => {
-    const { owner, store } = await setup();
+    const { owner, store } = await setupOwnerVoucherStore();
     const res = await request(app)
       .patch(`/stores/${store.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: "   " });
     expect(res.status).toBe(400);
   });
@@ -245,27 +219,27 @@ describe("PATCH /stores/:id", () => {
 
 describe("DELETE /stores/:id", () => {
   it("returns 401 without an access token", async () => {
-    const { store } = await setup();
+    const { store } = await setupOwnerVoucherStore();
     const res = await request(app).delete(`/stores/${store.id}`);
     expect(res.status).toBe(401);
   });
 
   it("returns 403 for a customer", async () => {
-    const { store } = await setup();
+    const { store } = await setupOwnerVoucherStore();
     const customer = await createCustomer();
 
     const res = await request(app)
       .delete(`/stores/${store.id}`)
-      .set(auth(customer.accessToken));
+      .set(authHelper(customer.accessToken));
     expect(res.status).toBe(403);
   });
 
   it("deletes own store", async () => {
-    const { owner, store } = await setup();
+    const { owner, store } = await setupOwnerVoucherStore();
 
     const res = await request(app)
       .delete(`/stores/${store.id}`)
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
     expect(res.status).toBe(204);
 
     const check = await request(app).get(`/stores/${store.id}`);
@@ -273,12 +247,12 @@ describe("DELETE /stores/:id", () => {
   });
 
   it("returns 404 when deleting another owner's store", async () => {
-    const { store } = await setup();
+    const { store } = await setupOwnerVoucherStore();
     const other = await createOwner();
 
     const res = await request(app)
       .delete(`/stores/${store.id}`)
-      .set(auth(other.accessToken));
+      .set(authHelper(other.accessToken));
 
     expect(res.status).toBe(404);
     const check = await request(app).get(`/stores/${store.id}`);

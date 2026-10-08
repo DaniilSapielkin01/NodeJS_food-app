@@ -20,7 +20,7 @@ export const productsRepository = {
   },
 
   getById(id: string) {
-    return prisma.product.findUnique({ where: { id } });
+    return prisma.product.findFirstOrThrow({ where: { id } });
   },
 
   getProductsByUserId(userId: string) {

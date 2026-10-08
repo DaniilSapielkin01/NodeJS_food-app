@@ -6,25 +6,18 @@ import { prisma } from "@database";
 import { EVoucherCategory } from "@generated/prisma/enums";
 
 import { app } from "../src/app";
-import { createCustomer, createOwner } from "./helpers";
+import {
+  authHelper,
+  cleanDb,
+  createCustomer,
+  createOwner,
+  createVoucher,
+  voucherData,
+} from "./helpers";
 
 const category = Object.values(EVoucherCategory)[0];
-const voucherData = { name: "Test voucher", category };
 
-const auth = (token: string) => ({ Authorization: `Bearer ${token}` });
-
-const createVoucher = async (token: string) => {
-  const res = await request(app)
-    .post("/vouchers")
-    .set(auth(token))
-    .send(voucherData);
-  return res.body as { id: string };
-};
-
-beforeEach(async () => {
-  await prisma.voucher.deleteMany();
-  await prisma.user.deleteMany();
-});
+beforeEach(cleanDb);
 
 afterAll(async () => {
   await prisma.$disconnect();
@@ -69,7 +62,7 @@ describe("POST /vouchers", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/vouchers")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send(voucherData);
     expect(res.status).toBe(403);
   });
@@ -78,7 +71,7 @@ describe("POST /vouchers", () => {
     const owner = await createOwner();
     const res = await request(app)
       .post("/vouchers")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send(voucherData);
 
     expect(res.status).toBe(201);
@@ -89,7 +82,7 @@ describe("POST /vouchers", () => {
     const owner = await createOwner();
     const res = await request(app)
       .post("/vouchers")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ category });
     expect(res.status).toBe(400);
   });
@@ -98,8 +91,13 @@ describe("POST /vouchers", () => {
     const owner = await createOwner();
     const res = await request(app)
       .post("/vouchers")
-      .set(auth(owner.accessToken))
-      .send({ name: "Test voucher", category: "NOPE" });
+      .set(authHelper(owner.accessToken))
+      .send({
+        name: "Test voucher",
+        category: "NOPE",
+        image: "https://example.com/product.png",
+        description: "Test desc voucher",
+      });
     expect(res.status).toBe(400);
   });
 });
@@ -122,7 +120,7 @@ describe("PATCH /vouchers/:id", () => {
 
     const res = await request(app)
       .patch(`/vouchers/${voucher.id}`)
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ name: "New" });
     expect(res.status).toBe(403);
   });
@@ -133,7 +131,7 @@ describe("PATCH /vouchers/:id", () => {
 
     const res = await request(app)
       .patch(`/vouchers/${voucher.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: "New" });
 
     expect(res.status).toBe(200);
@@ -147,19 +145,19 @@ describe("PATCH /vouchers/:id", () => {
 
     const res = await request(app)
       .patch(`/vouchers/${voucher.id}`)
-      .set(auth(other.accessToken))
+      .set(authHelper(other.accessToken))
       .send({ name: "Hacked" });
 
     expect(res.status).toBe(404);
     const check = await request(app).get(`/vouchers/${voucher.id}`);
-    expect(check.body.name).toBe(voucherData.name);
+    expect(check.body.name).toBe(voucher.name);
   });
 
   it("returns 404 for a non-existent voucher", async () => {
     const owner = await createOwner();
     const res = await request(app)
       .patch(`/vouchers/${randomUUID()}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: "New" });
     expect(res.status).toBe(404);
   });
@@ -170,7 +168,7 @@ describe("PATCH /vouchers/:id", () => {
 
     const res = await request(app)
       .patch(`/vouchers/${voucher.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ category: "NOPE" });
     expect(res.status).toBe(400);
   });
@@ -192,7 +190,7 @@ describe("DELETE /vouchers/:id", () => {
 
     const res = await request(app)
       .delete(`/vouchers/${voucher.id}`)
-      .set(auth(customer.accessToken));
+      .set(authHelper(customer.accessToken));
     expect(res.status).toBe(403);
   });
 
@@ -202,7 +200,7 @@ describe("DELETE /vouchers/:id", () => {
 
     const res = await request(app)
       .delete(`/vouchers/${voucher.id}`)
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
     expect(res.status).toBe(204);
 
     const check = await request(app).get(`/vouchers/${voucher.id}`);
@@ -216,7 +214,7 @@ describe("DELETE /vouchers/:id", () => {
 
     const res = await request(app)
       .delete(`/vouchers/${voucher.id}`)
-      .set(auth(other.accessToken));
+      .set(authHelper(other.accessToken));
 
     expect(res.status).toBe(404);
     const check = await request(app).get(`/vouchers/${voucher.id}`);

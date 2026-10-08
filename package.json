@@ -11,7 +11,7 @@
     "start": "node dist/server.js",
     "lint:check": "eslint src",
     "lint": "eslint src --fix",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --passWithNoTests",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --passWithNoTests --runInBand",
     "prisma": "prisma migrate dev && prisma generate"
   },
   "keywords": [],

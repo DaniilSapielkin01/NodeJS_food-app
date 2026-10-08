@@ -6,27 +6,30 @@ import { prisma } from "@database";
 import { EVoucherCategory } from "@generated/prisma/enums";
 
 import { app } from "../src/app";
-import { createCustomer, createOwner } from "./helpers";
+import {
+  authHelper,
+  cleanDb,
+  createCustomer,
+  createOwner,
+  productData,
+  voucherData,
+} from "./helpers";
 
-const [categoryA, categoryB] = Object.values(EVoucherCategory);
+const [categoryA, categoryB] = Object.values(EVoucherCategory) as [
+  EVoucherCategory,
+  EVoucherCategory,
+];
 
-const productData = {
-  name: "Test product",
-  image: "https://example.com/product.png",
-  description: "Test description",
-  price: 10.5,
-  discount: "0",
-  count: 5,
-};
-
-// FIX: Voucher requires image and description
-const voucherData = {
-  name: "Test voucher",
-  image: "https://example.com/voucher.png",
-  description: "Test voucher description",
-};
-
-const auth = (token: string) => ({ Authorization: `Bearer ${token}` });
+// voucher directly in the DB, the name is unique because of @unique
+const createVoucherDb = (ownerId: string, category = categoryA) =>
+  prisma.voucher.create({
+    data: {
+      ...voucherData,
+      name: `Test voucher ${randomUUID()}`,
+      category,
+      ownerId,
+    },
+  });
 
 // owner + voucher + store + product, all created directly in the DB
 const setup = async (category = categoryA) => {
@@ -34,12 +37,10 @@ const setup = async (category = categoryA) => {
   const profile = await prisma.ownerProfile.findUniqueOrThrow({
     where: { userId: owner.user.id },
   });
-  const voucher = await prisma.voucher.create({
-    data: { ...voucherData, category: category!, ownerId: profile.id },
-  });
+  const voucher = await createVoucherDb(profile.id, category);
   const store = await prisma.store.create({
     data: {
-      name: "Test store",
+      name: `Test product ${randomUUID()}`,
       address: "Test street 1",
       voucherId: voucher.id,
     },
@@ -47,6 +48,7 @@ const setup = async (category = categoryA) => {
   const product = await prisma.product.create({
     data: {
       ...productData,
+      name: `Test product ${randomUUID()}`,
       voucherId: voucher.id,
       stores: { connect: [{ id: store.id }] },
     },
@@ -54,12 +56,7 @@ const setup = async (category = categoryA) => {
   return { owner, voucher, store, product };
 };
 
-beforeEach(async () => {
-  await prisma.product.deleteMany();
-  await prisma.store.deleteMany();
-  await prisma.voucher.deleteMany();
-  await prisma.user.deleteMany();
-});
+beforeEach(cleanDb);
 
 afterAll(async () => {
   await prisma.$disconnect();
@@ -102,7 +99,7 @@ describe("GET /products/my", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .get("/products/my")
-      .set(auth(customer.accessToken));
+      .set(authHelper(customer.accessToken));
     expect(res.status).toBe(403);
   });
 
@@ -112,20 +109,19 @@ describe("GET /products/my", () => {
 
     const res = await request(app)
       .get("/products/my")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(1);
     expect(res.body[0].id).toBe(product.id);
   });
 
-  // ADDED
   it("returns an empty array when the owner has no products", async () => {
     const owner = await createOwner();
 
     const res = await request(app)
       .get("/products/my")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
@@ -169,7 +165,7 @@ describe("POST /products", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/products")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({
         ...productData,
         voucherId: randomUUID(),
@@ -183,7 +179,7 @@ describe("POST /products", () => {
 
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({
         ...productData,
         name: "Second product",
@@ -201,16 +197,15 @@ describe("POST /products", () => {
     expect(db.stores.map((s) => s.id)).toEqual([store.id]);
   });
 
-  // ADDED
   it("saves custom image, discount and inStock", async () => {
     const { owner, voucher, store } = await setup();
 
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({
         ...productData,
-        image: "https://example.com/product.png",
+        image: "https://example.com/custom.png",
         discount: "2",
         inStock: false,
         voucherId: voucher.id,
@@ -218,8 +213,8 @@ describe("POST /products", () => {
       });
 
     expect(res.status).toBe(201);
-    expect(res.body.image).toBe("https://example.com/product.png");
-    expect(res.body.discount).toBe("2");
+    expect(res.body.image).toBe("https://example.com/custom.png");
+    expect(Number(res.body.discount)).toBe(2);
     expect(res.body.inStock).toBe(false);
   });
 
@@ -229,7 +224,7 @@ describe("POST /products", () => {
 
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({
         ...productData,
         voucherId: other.voucher.id,
@@ -240,22 +235,13 @@ describe("POST /products", () => {
     expect(await prisma.product.count()).toBe(2);
   });
 
-  // FIX: the old version of this test used another owner's store, so it did not
-  // test "store of a different voucher" at all. Now there are two cases.
   it("returns 404 for a store of a different voucher of the same owner", async () => {
     const { owner, voucher, store } = await setup();
-    const secondVoucher = await prisma.voucher.create({
-      data: {
-        ...voucherData,
-        name: "Second voucher",
-        category: categoryA!,
-        ownerId: voucher.ownerId,
-      },
-    });
+    const secondVoucher = await createVoucherDb(voucher.ownerId);
 
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({
         ...productData,
         voucherId: secondVoucher.id,
@@ -272,7 +258,7 @@ describe("POST /products", () => {
 
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({
         ...productData,
         voucherId: voucher.id,
@@ -287,17 +273,16 @@ describe("POST /products", () => {
     const { owner, voucher } = await setup();
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ ...productData, voucherId: voucher.id, storeIds: [] });
     expect(res.status).toBe(400);
   });
 
-  // ADDED: checks that the validator really validates array elements
   it("returns 400 when storeIds contain a non-UUID", async () => {
     const { owner, voucher, store } = await setup();
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({
         ...productData,
         voucherId: voucher.id,
@@ -306,12 +291,11 @@ describe("POST /products", () => {
     expect(res.status).toBe(400);
   });
 
-  // ADDED
   it("returns 400 for an invalid voucherId", async () => {
     const { owner, store } = await setup();
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ ...productData, voucherId: "not-a-uuid", storeIds: [store.id] });
     expect(res.status).toBe(400);
   });
@@ -321,7 +305,7 @@ describe("POST /products", () => {
     const { name: _name, ...noName } = productData;
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ ...noName, voucherId: voucher.id, storeIds: [store.id] });
     expect(res.status).toBe(400);
   });
@@ -330,7 +314,7 @@ describe("POST /products", () => {
     const { owner, voucher, store } = await setup();
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({
         ...productData,
         price: -1,
@@ -344,7 +328,7 @@ describe("POST /products", () => {
     const { owner, voucher, store } = await setup();
     const res = await request(app)
       .post("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({
         ...productData,
         count: -1,
@@ -370,7 +354,7 @@ describe("PATCH /products/:id", () => {
 
     const res = await request(app)
       .patch(`/products/${product.id}`)
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ name: "New" });
     expect(res.status).toBe(403);
   });
@@ -380,7 +364,7 @@ describe("PATCH /products/:id", () => {
 
     const res = await request(app)
       .patch(`/products/${product.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: "New name", price: 20, count: 9 });
 
     expect(res.status).toBe(200);
@@ -401,7 +385,7 @@ describe("PATCH /products/:id", () => {
 
     const res = await request(app)
       .patch(`/products/${product.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ storeIds: [second.id] });
 
     expect(res.status).toBe(200);
@@ -410,17 +394,9 @@ describe("PATCH /products/:id", () => {
     ]);
   });
 
-  // ADDED: set must not accept a store from another voucher
   it("returns 404 for a store of a different voucher", async () => {
     const { owner, voucher, store, product } = await setup();
-    const secondVoucher = await prisma.voucher.create({
-      data: {
-        ...voucherData,
-        name: "Second voucher",
-        category: categoryA!,
-        ownerId: voucher.ownerId,
-      },
-    });
+    const secondVoucher = await createVoucherDb(voucher.ownerId);
     const foreignStore = await prisma.store.create({
       data: {
         name: "Foreign store",
@@ -431,7 +407,7 @@ describe("PATCH /products/:id", () => {
 
     const res = await request(app)
       .patch(`/products/${product.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ storeIds: [foreignStore.id] });
 
     expect(res.status).toBe(404);
@@ -448,41 +424,39 @@ describe("PATCH /products/:id", () => {
 
     const res = await request(app)
       .patch(`/products/${product.id}`)
-      .set(auth(other.accessToken))
+      .set(authHelper(other.accessToken))
       .send({ name: "Hacked" });
 
     expect(res.status).toBe(404);
     const db = await prisma.product.findUniqueOrThrow({
       where: { id: product.id },
     });
-    expect(db.name).toBe(productData.name);
+    expect(db.name).toBe(product.name);
   });
 
   it("returns 404 for a non-existent product", async () => {
     const owner = await createOwner();
     const res = await request(app)
       .patch(`/products/${randomUUID()}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: "New" });
     expect(res.status).toBe(404);
   });
 
-  // ADDED
   it("returns 400 for an invalid id", async () => {
     const owner = await createOwner();
     const res = await request(app)
       .patch("/products/not-a-uuid")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ name: "New" });
     expect(res.status).toBe(400);
   });
 
-  // ADDED
   it("returns 400 when storeIds contain a non-UUID", async () => {
     const { owner, product } = await setup();
     const res = await request(app)
       .patch(`/products/${product.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ storeIds: ["not-a-uuid"] });
     expect(res.status).toBe(400);
   });
@@ -491,7 +465,7 @@ describe("PATCH /products/:id", () => {
     const { owner, product } = await setup();
     const res = await request(app)
       .patch(`/products/${product.id}`)
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ price: -5 });
     expect(res.status).toBe(400);
   });
@@ -510,18 +484,20 @@ describe("DELETE /products/:id", () => {
 
     const res = await request(app)
       .delete(`/products/${product.id}`)
-      .set(auth(customer.accessToken));
+      .set(authHelper(customer.accessToken));
     expect(res.status).toBe(403);
   });
 
   it("deletes own product", async () => {
     const { owner, product } = await setup();
+    console.log("setup done");
 
     const res = await request(app)
       .delete(`/products/${product.id}`)
-      .set(auth(owner.accessToken));
-    expect(res.status).toBe(204);
+      .set(authHelper(owner.accessToken));
 
+    console.log("response", res.status);
+    expect(res.status).toBe(204);
     expect(await prisma.product.count()).toBe(0);
   });
 
@@ -531,27 +507,25 @@ describe("DELETE /products/:id", () => {
 
     const res = await request(app)
       .delete(`/products/${product.id}`)
-      .set(auth(other.accessToken));
+      .set(authHelper(other.accessToken));
 
     expect(res.status).toBe(404);
     expect(await prisma.product.count()).toBe(1);
   });
 
-  // ADDED
   it("returns 404 for a non-existent product", async () => {
     const owner = await createOwner();
     const res = await request(app)
       .delete(`/products/${randomUUID()}`)
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
     expect(res.status).toBe(404);
   });
 
-  // ADDED
   it("returns 400 for an invalid id", async () => {
     const owner = await createOwner();
     const res = await request(app)
       .delete("/products/not-a-uuid")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
     expect(res.status).toBe(400);
   });
 });
@@ -568,7 +542,7 @@ describe("DELETE /products (bulk)", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .delete("/products")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ productsIds: [randomUUID()] });
     expect(res.status).toBe(403);
   });
@@ -585,7 +559,7 @@ describe("DELETE /products (bulk)", () => {
 
     const res = await request(app)
       .delete("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ productsIds: [product.id, second.id] });
 
     expect(res.status).toBe(200);
@@ -599,7 +573,7 @@ describe("DELETE /products (bulk)", () => {
 
     const res = await request(app)
       .delete("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ productsIds: [other.product.id] });
 
     expect(res.status).toBe(200);
@@ -607,14 +581,13 @@ describe("DELETE /products (bulk)", () => {
     expect(await prisma.product.count()).toBe(2);
   });
 
-  // ADDED: own + foreign ids in one request, only own must be deleted
   it("deletes only own products when ids are mixed", async () => {
     const { owner, product } = await setup();
     const other = await setup();
 
     const res = await request(app)
       .delete("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ productsIds: [product.id, other.product.id] });
 
     expect(res.status).toBe(200);
@@ -627,17 +600,16 @@ describe("DELETE /products (bulk)", () => {
     const { owner } = await setup();
     const res = await request(app)
       .delete("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ productsIds: "abc" });
     expect(res.status).toBe(400);
   });
 
-  // ADDED
   it("returns 400 when productsIds contain a non-UUID", async () => {
     const { owner, product } = await setup();
     const res = await request(app)
       .delete("/products")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ productsIds: [product.id, "not-a-uuid"] });
     expect(res.status).toBe(400);
     expect(await prisma.product.count()).toBe(1);

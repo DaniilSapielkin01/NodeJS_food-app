@@ -60,7 +60,7 @@ export const deleteProductsController = async (req: Request, res: Response) => {
 
   await productsRepository.delete(req.user!.userId, productId);
 
-  return res.status(HTTP_STATUS.NO_CONTENT_204);
+  return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 };
 
 export const deleteProductsAllController = async (

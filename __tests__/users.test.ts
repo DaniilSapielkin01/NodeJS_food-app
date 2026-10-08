@@ -4,17 +4,18 @@ import { prisma } from "@database";
 import { ERole, EVehicleType } from "@generated/prisma/enums";
 
 import { app } from "../src/app";
-import { createCourier, createCustomer, createOwner } from "./helpers";
+import {
+  authHelper,
+  cleanDb,
+  createCourier,
+  createCustomer,
+  createOwner,
+} from "./helpers";
 
 const vehicleType = [Object.values(EVehicleType)[0]];
 const phone = "+380000000000";
 
-const auth = (token: string) => ({ Authorization: `Bearer ${token}` });
-
-beforeEach(async () => {
-  // profiles and refresh tokens are removed by cascade
-  await prisma.user.deleteMany();
-});
+beforeEach(cleanDb);
 
 afterAll(async () => {
   await prisma.$disconnect();
@@ -30,7 +31,7 @@ describe("GET /users/me", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .get("/users/me")
-      .set(auth(customer.accessToken));
+      .set(authHelper(customer.accessToken));
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(customer.user.id);
@@ -42,12 +43,12 @@ describe("GET /users/me", () => {
 
     const without = await request(app)
       .get("/users/me")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
     expect(without.body.ownerProfile).toBeUndefined();
 
     const withRole = await request(app)
       .get("/users/me?role=OWNER")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
     expect(withRole.body.ownerProfile).toBeDefined();
   });
 
@@ -55,7 +56,7 @@ describe("GET /users/me", () => {
     const courier = await createCourier();
     const res = await request(app)
       .get("/users/me?role=COURIER")
-      .set(auth(courier.accessToken));
+      .set(authHelper(courier.accessToken));
 
     expect(res.status).toBe(200);
     expect(res.body.courierProfile).toBeDefined();
@@ -65,7 +66,7 @@ describe("GET /users/me", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .get("/users/me?role=NOPE")
-      .set(auth(customer.accessToken));
+      .set(authHelper(customer.accessToken));
     expect(res.status).toBe(400);
   });
 });
@@ -80,7 +81,7 @@ describe("PATCH /users/me", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .patch("/users/me")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ name: "New name" });
 
     expect(res.status).toBe(200);
@@ -91,7 +92,7 @@ describe("PATCH /users/me", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .patch("/users/me")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ name: "New name" });
 
     expect(res.body.password).toBeUndefined();
@@ -101,7 +102,7 @@ describe("PATCH /users/me", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .patch("/users/me")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ name: "   " });
     expect(res.status).toBe(400);
   });
@@ -112,7 +113,7 @@ describe("PATCH /users/owner", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .patch("/users/owner")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ companyName: "New" });
     expect(res.status).toBe(403);
   });
@@ -121,7 +122,7 @@ describe("PATCH /users/owner", () => {
     const owner = await createOwner();
     const res = await request(app)
       .patch("/users/owner")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ companyName: "New company", phone: "+380111111111" });
 
     expect(res.status).toBe(200);
@@ -133,7 +134,7 @@ describe("PATCH /users/owner", () => {
     const owner = await createOwner();
     const res = await request(app)
       .patch("/users/owner")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ companyName: "" });
     expect(res.status).toBe(400);
   });
@@ -144,7 +145,7 @@ describe("PATCH /users/courier", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .patch("/users/courier")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ phone });
     expect(res.status).toBe(403);
   });
@@ -153,7 +154,7 @@ describe("PATCH /users/courier", () => {
     const courier = await createCourier();
     const res = await request(app)
       .patch("/users/courier")
-      .set(auth(courier.accessToken))
+      .set(authHelper(courier.accessToken))
       .send({ phone: "+380111111111", vehicleType });
 
     expect(res.status).toBe(200);
@@ -165,7 +166,7 @@ describe("PATCH /users/courier", () => {
     const courier = await createCourier();
     const res = await request(app)
       .patch("/users/courier")
-      .set(auth(courier.accessToken))
+      .set(authHelper(courier.accessToken))
       .send({ vehicleType: ["NOPE"] });
     expect(res.status).toBe(400);
   });
@@ -174,7 +175,7 @@ describe("PATCH /users/courier", () => {
     const courier = await createCourier();
     const res = await request(app)
       .patch("/users/courier")
-      .set(auth(courier.accessToken))
+      .set(authHelper(courier.accessToken))
       .send({ vehicleType: [] });
     expect(res.status).toBe(400);
   });
@@ -192,7 +193,7 @@ describe("POST /users/roles", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/users/roles")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ role: "OWNER", companyName: "Acme", phone });
 
     expect(res.status).toBe(201);
@@ -209,7 +210,7 @@ describe("POST /users/roles", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/users/roles")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ role: "COURIER", vehicleType, phone });
 
     expect(res.status).toBe(201);
@@ -226,12 +227,12 @@ describe("POST /users/roles", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/users/roles")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ role: "OWNER", companyName: "Acme", phone });
 
     const check = await request(app)
       .patch("/users/owner")
-      .set(auth(res.body.accessToken))
+      .set(authHelper(res.body.accessToken))
       .send({ companyName: "Changed" });
     expect(check.status).toBe(200);
   });
@@ -240,7 +241,7 @@ describe("POST /users/roles", () => {
     const owner = await createOwner();
     const res = await request(app)
       .post("/users/roles")
-      .set(auth(owner.accessToken))
+      .set(authHelper(owner.accessToken))
       .send({ role: "OWNER", companyName: "Acme", phone });
     expect(res.status).toBe(400);
   });
@@ -249,7 +250,7 @@ describe("POST /users/roles", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/users/roles")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ role: "CUSTOMER", phone });
     expect(res.status).toBe(400);
   });
@@ -258,7 +259,7 @@ describe("POST /users/roles", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/users/roles")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ role: "OWNER", phone });
     expect(res.status).toBe(400);
   });
@@ -267,7 +268,7 @@ describe("POST /users/roles", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/users/roles")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ role: "COURIER", phone });
     expect(res.status).toBe(400);
   });
@@ -276,7 +277,7 @@ describe("POST /users/roles", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .post("/users/roles")
-      .set(auth(customer.accessToken))
+      .set(authHelper(customer.accessToken))
       .send({ role: "OWNER", companyName: "Acme" });
     expect(res.status).toBe(400);
   });
@@ -292,7 +293,7 @@ describe("DELETE /users/roles", () => {
     const owner = await createOwner();
     const res = await request(app)
       .delete("/users/roles?role=OWNER")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
 
     expect(res.status).toBe(200);
 
@@ -308,11 +309,11 @@ describe("DELETE /users/roles", () => {
     const owner = await createOwner();
     const res = await request(app)
       .delete("/users/roles?role=OWNER")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
 
     const check = await request(app)
       .patch("/users/owner")
-      .set(auth(res.body.tokens.accessToken))
+      .set(authHelper(res.body.tokens.accessToken))
       .send({ companyName: "Changed" });
     expect(check.status).toBe(403);
   });
@@ -321,7 +322,7 @@ describe("DELETE /users/roles", () => {
     const customer = await createCustomer();
     const res = await request(app)
       .delete("/users/roles?role=COURIER")
-      .set(auth(customer.accessToken));
+      .set(authHelper(customer.accessToken));
     expect(res.status).toBe(400);
   });
 
@@ -329,7 +330,7 @@ describe("DELETE /users/roles", () => {
     const owner = await createOwner();
     const res = await request(app)
       .delete("/users/roles")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
     expect(res.status).toBe(400);
   });
 });
@@ -344,7 +345,7 @@ describe("DELETE /users/me", () => {
     const owner = await createOwner();
     const res = await request(app)
       .delete("/users/me")
-      .set(auth(owner.accessToken));
+      .set(authHelper(owner.accessToken));
     expect(res.status).toBe(200);
 
     const user = await prisma.user.findUnique({ where: { id: owner.user.id } });
