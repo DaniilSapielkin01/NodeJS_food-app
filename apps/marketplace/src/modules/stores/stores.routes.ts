@@ -1,11 +1,10 @@
 import { Router } from "express";
 
+import { requireRoleMiddleware } from "@packages/auth";
+import { authGuard } from "@middlewares/authGuard.middleware";
+import { paramsIDValidator } from "@packages/validation";
+
 import { ERole } from "@generated/prisma/enums";
-import {
-  authMiddleware,
-  requireRoleMiddleware,
-} from "@middlewares/auth.middlewares";
-import { paramsIDValidator } from "@utils/validators/validateParams";
 
 import {
   createStoresController,
@@ -22,14 +21,14 @@ export const storesRouter: Router = Router();
 storesRouter.get("/", getStoresController);
 storesRouter.get(
   "/my",
-  authMiddleware,
+  authGuard,
   requireRoleMiddleware(ERole.OWNER),
   getStoresMyController,
 );
 storesRouter.get("/:id", getStoresByIdController);
 
 // AUTH
-storesRouter.use(authMiddleware);
+storesRouter.use(authGuard);
 //
 storesRouter.post(
   "/",

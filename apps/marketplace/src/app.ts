@@ -1,10 +1,12 @@
 import express, { Express } from "express";
 
 import { NotFoundError } from "@packages/errors";
+import {
+  corsMiddleware,
+  errorHandler,
+  httpLoggerMiddleware,
+} from "@packages/middlewares";
 
-import { corsMiddleware } from "@middlewares/cors.middlewares";
-import { errorHandler } from "@middlewares/errorHandler.middlewares";
-import { httpLoggerMiddleware } from "@middlewares/httpLogger.middlewares";
 import { authRouter } from "@modules/auth/auth.routes";
 import { ordersRouter } from "@modules/orders/orders.routes";
 import { productsRouter } from "@modules/products/products.routes";

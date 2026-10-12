@@ -34,7 +34,8 @@
     "express-validator": "^7.3.2",
     "jsonwebtoken": "^9.0.3",
     "pino": "^10.4.0",
-    "pino-http": "^11.0.0"
+    "pino-http": "^11.0.0",
+    "@packages/validation": "workspace:*"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

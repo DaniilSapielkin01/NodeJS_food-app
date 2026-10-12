@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { authMiddleware } from "@middlewares/auth.middlewares";
+import { authGuard } from "@middlewares/authGuard.middleware";
 
 import {
   loginController,
@@ -23,5 +23,5 @@ authRouter.post("/refresh", validateRefreshTokenParams(), refreshController);
 
 authRouter.post("/logout", validateRefreshTokenParams(), logoutController);
 
-authRouter.use(authMiddleware);
+authRouter.use(authGuard);
 authRouter.post("/logout-all", logoutFromAllController);

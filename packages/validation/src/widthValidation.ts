@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Location, matchedData, ValidationChain } from "express-validator";
 
-import { handleValidationErrors } from "./handleValidationErrors";
+import { handleValidationErrors } from "@packages/middlewares";
 
 const keepOnlyValidated =
   (locations: Location[]) =>

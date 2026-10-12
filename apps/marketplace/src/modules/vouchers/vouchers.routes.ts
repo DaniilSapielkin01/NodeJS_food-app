@@ -1,11 +1,10 @@
 import { Router } from "express";
 
+import { requireRoleMiddleware } from "@packages/auth";
+import { authGuard } from "@middlewares/authGuard.middleware";
+import { paramsIDValidator } from "@packages/validation";
+
 import { ERole } from "@generated/prisma/enums";
-import {
-  authMiddleware,
-  requireRoleMiddleware,
-} from "@middlewares/auth.middlewares";
-import { paramsIDValidator } from "@utils/validators/validateParams";
 
 import {
   createVoucherController,
@@ -26,7 +25,7 @@ vouchersRouter.get("/list", getListController);
 vouchersRouter.get("/:id", paramsIDValidator("id"), getByIdController);
 
 // Middleware
-vouchersRouter.use(authMiddleware);
+vouchersRouter.use(authGuard);
 
 // CREATE
 vouchersRouter.post(

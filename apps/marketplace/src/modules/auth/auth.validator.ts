@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-import { withValidation } from "@utils/validators/widthValidation";
+import { withValidation } from "@packages/validation";
 
 export const validateAuthParams = () =>
   withValidation([

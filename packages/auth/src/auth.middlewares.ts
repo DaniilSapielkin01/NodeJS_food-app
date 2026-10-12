@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-export const createAuthMiddleware =
+export const authMiddleware =
   (loadUser: LoadUser) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;

@@ -1,14 +1,10 @@
 import { Router } from "express";
 
+import { requireRoleMiddleware } from "@packages/auth";
+import { authGuard } from "@middlewares/authGuard.middleware";
+import { paramsIDValidator, queryEnumValidator } from "@packages/validation";
+
 import { ERole, EVoucherCategory } from "@generated/prisma/enums";
-import {
-  authMiddleware,
-  requireRoleMiddleware,
-} from "@middlewares/auth.middlewares";
-import {
-  paramsIDValidator,
-  queryEnumValidator,
-} from "@utils/validators/validateParams";
 
 import {
   createProductsController,
@@ -35,14 +31,14 @@ productsRouter.get(
 );
 productsRouter.get(
   "/my",
-  authMiddleware,
+  authGuard,
   requireRoleMiddleware(ERole.OWNER),
   getMyProductsController,
 );
 productsRouter.get("/:id", paramsIDValidator("id"), getProductsByIdController);
 
 // MIDDLEWARE
-productsRouter.use(authMiddleware);
+productsRouter.use(authGuard);
 
 // CREATE
 productsRouter.post(

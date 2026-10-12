@@ -1,10 +1,9 @@
 import { Router } from "express";
 
+import { requireRoleMiddleware } from "@packages/auth";
+import { authGuard } from "@middlewares/authGuard.middleware";
+
 import { ERole } from "@generated/prisma/enums";
-import {
-  authMiddleware,
-  requireRoleMiddleware,
-} from "@middlewares/auth.middlewares";
 
 import {
   addRoleController,
@@ -26,7 +25,7 @@ import {
 
 export const userRouter: Router = Router();
 
-userRouter.use(authMiddleware);
+userRouter.use(authGuard);
 
 userRouter.get("/me", userRoleValidator(), getUserController);
 

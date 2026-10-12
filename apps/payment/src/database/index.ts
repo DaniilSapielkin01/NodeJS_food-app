@@ -1,5 +1,6 @@
-import { handlePrismaError } from "@packages/errors";
 import { PrismaPg } from "@prisma/adapter-pg";
+
+import { handlePrismaError } from "@packages/errors";
 
 import { PrismaClient } from "../generated/prisma/client";
 

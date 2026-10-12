@@ -1,12 +1,12 @@
 import "dotenv/config";
 
+import { logger } from "@packages/logger";
+
 import { prisma } from "@database";
 
 import { app } from "./app";
 
 const PORT = process.env.PORT || 5002;
-
-import { logger } from "@utils/logger/logger";
 
 const startApp = async () => {
   try {

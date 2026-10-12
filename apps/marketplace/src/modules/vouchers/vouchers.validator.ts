@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 import { EVoucherCategory } from "@generated/prisma/enums";
-import { withValidation } from "@utils/validators/widthValidation";
+import { withValidation } from "@packages/validation";
 
 export const createVoucherValidator = () =>
   withValidation([

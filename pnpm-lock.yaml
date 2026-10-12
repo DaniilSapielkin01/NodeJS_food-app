@@ -69,6 +69,9 @@ importers:
       '@packages/middlewares':
         specifier: workspace:*
         version: link:../../packages/middlewares
+      '@packages/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
       '@prisma/adapter-pg':
         specifier: ^7.10.0
         version: 7.10.0
@@ -90,6 +93,9 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      express-validator:
+        specifier: ^7.3.2
+        version: 7.3.2
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -145,9 +151,6 @@ importers:
       eslint-plugin-simple-import-sort:
         specifier: ^14.0.0
         version: 14.0.0(eslint@10.12.0(jiti@2.7.0))
-      express-validator:
-        specifier: ^7.3.2
-        version: 7.3.2
       jest:
         specifier: ^30.4.2
         version: 30.5.2(@types/node@26.6.4)(ts-node@10.9.2(@types/node@26.6.4)(typescript@5.9.3))
@@ -196,6 +199,9 @@ importers:
       '@packages/middlewares':
         specifier: workspace:*
         version: link:../../packages/middlewares
+      '@packages/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
       '@prisma/adapter-pg':
         specifier: ^7.10.0
         version: 7.10.0
@@ -340,6 +346,22 @@ importers:
       pino-http:
         specifier: ^11.0.0
         version: 11.0.0
+
+  packages/validation:
+    dependencies:
+      '@packages/middlewares':
+        specifier: workspace:*
+        version: link:../middlewares
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
+      express-validator:
+        specifier: ^7.3.2
+        version: 7.3.2
+    devDependencies:
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
 
 packages:
 

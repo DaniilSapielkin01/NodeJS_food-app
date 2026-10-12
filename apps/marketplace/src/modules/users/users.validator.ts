@@ -1,7 +1,7 @@
 import { body, query } from "express-validator";
 
 import { ERole, EVehicleType } from "@generated/prisma/enums";
-import { withValidation } from "@utils/validators/widthValidation";
+import { withValidation } from "@packages/validation";
 
 export const userRoleValidator = () =>
   withValidation([

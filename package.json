@@ -2,7 +2,11 @@
   "name": "food-platform",
   "private": true,
   "scripts": {
-    "build": "pnpm -r --filter './apps/*' build"
+    "build": "pnpm test && pnpm build:apps",
+    "test:marketplace": "pnpm --filter ./apps/marketplace test",
+    "test:payment": "pnpm --filter ./apps/payment --if-present test",
+    "test": "pnpm test:marketplace && pnpm test:payment",
+    "build:apps": "pnpm -r --filter './apps/*' build"
   },
   "dependencies": {
     "cors": "^2.8.6",

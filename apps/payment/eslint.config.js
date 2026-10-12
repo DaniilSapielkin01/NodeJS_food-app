@@ -27,9 +27,13 @@ export default [
           groups: [
             ["^\\u0000"],
             ["^node:"],
-            // Исключаем эти же папки из npm-пакетов
-            [`^@(?!${folders})[\\w-]+`, "^[a-zA-Z0-9]"],
+
+            [`^@(?!${folders}|packages/)[\\w-]+`, "^[a-zA-Z0-9]"],
+
+            ["^@packages/"],
+
             [internalAliases],
+
             ["^\\."],
           ],
         },

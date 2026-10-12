@@ -1,11 +1,10 @@
 import { Router } from "express";
 
+import { requireRoleMiddleware } from "@packages/auth";
+import { paramsIDValidator } from "@packages/validation";
+
 import { ERole } from "@generated/prisma/enums";
-import {
-  authMiddleware,
-  requireRoleMiddleware,
-} from "@middlewares/auth.middlewares";
-import { paramsIDValidator } from "@utils/validators/validateParams";
+import { authGuard } from "@middlewares/authGuard.middleware";
 
 import {
   acceptOrderController,
@@ -83,7 +82,7 @@ customerRouter.patch(
 // MAIN
 export const ordersRouter: Router = Router();
 
-ordersRouter.use(authMiddleware);
+ordersRouter.use(authGuard);
 ordersRouter.use("/customer", customerRouter);
 ordersRouter.use("/owner", ownerRouter);
 ordersRouter.use("/courier", courierRouter);

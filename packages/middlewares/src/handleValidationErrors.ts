@@ -1,7 +1,6 @@
+import { HTTP_STATUS } from "@packages/constants";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
-
-import { HTTP_STATUS } from "@utils/constants/statuses";
 
 export const handleValidationErrors = (
   req: Request,
