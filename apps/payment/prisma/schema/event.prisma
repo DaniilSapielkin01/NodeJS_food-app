@@ -1,0 +1,16 @@
+model PaymentEvent {
+  id String @id @default(uuid()) @db.Uuid
+  provider EProviderPayment
+  providerEventId String
+  type String
+  payload Json
+  processedAt DateTime?
+  error String?
+  createdAt DateTime @default(now())
+
+  paymentId String? @db.Uuid
+  payment Payment? @relation(fields: [paymentId], references: [id])
+
+  @@unique([provider, providerEventId])
+  @@index([paymentId])
+}

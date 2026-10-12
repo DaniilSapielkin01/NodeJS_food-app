@@ -1,28 +1,62 @@
 {
   "name": "payment",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "test": "jest"
+    "dev": "nodemon --watch src --watch ../../packages --ext ts --exec tsx src/server.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "pnpm typecheck && node build.mjs",
+    "build:prod": "pnpm lint:check && pnpm test && pnpm build",
+    "start": "node dist/server.js",
+    "lint:check": "eslint src",
+    "lint": "eslint src --fix",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --passWithNoTests --runInBand",
+    "prisma": "prisma migrate dev && prisma generate",
+    "test:db:up": "docker compose -f ../../docker-compose.yml up -d --wait payment-db-test",
+    "test:db:migrate": "dotenv run -f .env.test -- prisma migrate deploy"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@packages/auth": "workspace:*",
     "@packages/constants": "workspace:*",
     "@packages/errors": "workspace:*",
     "@packages/logger": "workspace:*",
     "@packages/middlewares": "workspace:*",
+    "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
-    "express": "^5.2.1"
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.6",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.6.4",
+    "@types/supertest": "^7.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.70.1",
+    "@typescript-eslint/parser": "^8.70.1",
+    "dotenv-cli": "^11.0.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.11.0",
+    "eslint-plugin-simple-import-sort": "^14.0.0",
     "jest": "^30.5.2",
+    "nodemon": "^3.1.14",
+    "pino-pretty": "^13.2.0",
     "prisma": "7.10.0",
+    "supertest": "^7.2.2",
     "ts-jest": "^29.4.14",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3"
-  }
+  },
+  "packageManager": "pnpm@10.17.1"
 }

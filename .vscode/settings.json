@@ -1,0 +1,16 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never",
+    "source.sortImports": "never"
+  },
+
+  "eslint.enable": true,
+  "eslint.useFlatConfig": true,
+  "eslint.validate": ["javascript", "typescript"],
+  "eslint.workingDirectories": [{ "pattern": "./apps/*/" }],
+
+  "jest.rootPath": "apps/marketplace",
+  "jest.jestCommandLine": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand"
+}

@@ -1,0 +1,44 @@
+enum ECurrency {
+  USD
+  EUR
+  UAH
+  USDT
+  USDC
+}
+
+enum EMethodPayment {
+  CARD
+  CRYPTO
+}
+
+enum EProviderPayment {
+  MOCK
+  STRIPE
+  CRYPTO
+}
+
+enum EPaymentStatus {
+  PENDING            // платёж создан, ждём оплаты
+  AUTHORIZED         // деньги заблокированы (hold)
+  CAPTURED           // деньги списаны
+  RELEASED           // блокировка снята, деньги не списаны
+  FAILED             // оплата не прошла
+  CANCELED           // отменён
+  EXPIRED            // истекло время
+  PARTIALLY_REFUNDED // часть денег возвращена
+  REFUNDED           // возвращено полностью
+}
+
+enum ERefundStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum ERefundReason {
+  REQUESTED_BY_CUSTOMER
+  ORDER_PROBLEM
+  DUPLICATE
+  FRAUDULENT
+  OTHER
+}

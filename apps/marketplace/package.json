@@ -14,7 +14,7 @@
     "lint": "eslint src --fix",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --passWithNoTests --runInBand",
     "prisma": "prisma migrate dev && prisma generate",
-    "test:db:up": "docker compose up -d --wait postgres_test",
+    "test:db:up": "docker compose -f ../../docker-compose.yml up -d --wait marketplace-db-test",
     "test:db:migrate": "dotenv run -f .env.test -- prisma migrate deploy"
   },
   "keywords": [],
