@@ -24,10 +24,10 @@ The system has two services:
 
 The application is role-based, and each role has its own restrictions.
 
-| Role | Permissions |
-| --- | --- |
-| **Customer** | Can only order food. |
-| **Owner** | Can create shops and products. |
+| Role         | Permissions                    |
+| ------------ | ------------------------------ |
+| **Customer** | Can only order food.           |
+| **Owner**    | Can create shops and products. |
 
 Authentication uses JWT. Requests are validated with express-validator, and authorization is enforced through shared middlewares.
 
@@ -95,11 +95,11 @@ Private keys come from a **`KeyProvider`** interface with an implementation that
 
 `POST /payments` checks that `available >= amount`. If so, it applies `available -= amount` and `held += amount` and sets the status to `AUTHORIZED`. Otherwise the status is `FAILED`.
 
-| Operation | Effect |
-| --- | --- |
+| Operation   | Effect                                                        |
+| ----------- | ------------------------------------------------------------- |
 | **capture** | `held -= amount`, the recipient is credited (order delivered) |
-| **release** | `held → available` (order cancelled after the hold) |
-| **refund** | the movement is reversed, in full or in part |
+| **release** | `held → available` (order cancelled after the hold)           |
+| **refund**  | the movement is reversed, in full or in part                  |
 
 Every operation runs in **one database transaction** with `SELECT ... FOR UPDATE` on the balance row.
 
@@ -133,23 +133,23 @@ Payment status changes follow an **explicit state machine**. Refunds are tracked
 
 ### API
 
-| Method | Route | Purpose |
-| --- | --- | --- |
-| `POST` | `/payments` | Create a payment (`Idempotency-Key`). `PENDING`, or immediately `AUTHORIZED` for crypto. |
-| `GET` | `/payments/:id` | Payment status. |
-| `GET` | `/payments?orderId=&userId=&status=` | Search and history. |
-| `POST` | `/payments/:id/capture` | `AUTHORIZED` → `CAPTURED` (order delivered). |
-| `POST` | `/payments/:id/release` | `AUTHORIZED` → `RELEASED` (cancelled after hold). |
-| `POST` | `/payments/:id/cancel` | `PENDING` → `CANCELED`. |
-| `POST` | `/payments/:id/refund` | Full or partial refund. |
-| `GET` | `/payments/:id/refunds`, `/refunds/:id` | Refund details. |
-| `POST` | `/webhooks/stripe` | Signature verification, raw body, saved to `PaymentEvent`, fast `200`. |
-| `POST` | `/webhooks/mock` | Dev only. |
-| `GET` | `/health` | Health check. |
-| `GET` | `/payments/:id/events` | Payment events (admin). |
-| `GET` | `/crypto/deposit-address` | User's deposit address. |
-| `GET` | `/balances/:userId` | Available and held balance. |
-| `POST` / `GET` | `/withdrawals` | Create and list withdrawals (with limits). |
+| Method         | Route                                   | Purpose                                                                                  |
+| -------------- | --------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `POST`         | `/payments`                             | Create a payment (`Idempotency-Key`). `PENDING`, or immediately `AUTHORIZED` for crypto. |
+| `GET`          | `/payments/:id`                         | Payment status.                                                                          |
+| `GET`          | `/payments?orderId=&userId=&status=`    | Search and history.                                                                      |
+| `POST`         | `/payments/:id/capture`                 | `AUTHORIZED` → `CAPTURED` (order delivered).                                             |
+| `POST`         | `/payments/:id/release`                 | `AUTHORIZED` → `RELEASED` (cancelled after hold).                                        |
+| `POST`         | `/payments/:id/cancel`                  | `PENDING` → `CANCELED`.                                                                  |
+| `POST`         | `/payments/:id/refund`                  | Full or partial refund.                                                                  |
+| `GET`          | `/payments/:id/refunds`, `/refunds/:id` | Refund details.                                                                          |
+| `POST`         | `/webhooks/stripe`                      | Signature verification, raw body, saved to `PaymentEvent`, fast `200`.                   |
+| `POST`         | `/webhooks/mock`                        | Dev only.                                                                                |
+| `GET`          | `/health`                               | Health check.                                                                            |
+| `GET`          | `/payments/:id/events`                  | Payment events (admin).                                                                  |
+| `GET`          | `/crypto/deposit-address`               | User's deposit address.                                                                  |
+| `GET`          | `/balances/:userId`                     | Available and held balance.                                                              |
+| `POST` / `GET` | `/withdrawals`                          | Create and list withdrawals (with limits).                                               |
 
 The OpenAPI documentation is served with **Swagger UI**.
 
@@ -157,21 +157,21 @@ The OpenAPI documentation is served with **Swagger UI**.
 
 Workers consume jobs from RabbitMQ. `node-cron` triggers periodic runs by putting jobs into the queue.
 
-| Worker | Responsibility |
-| --- | --- |
-| `deposit-watcher` | Reads chain events with viem and credits the ledger. |
-| `outbox-publisher` | Publishes outbox events to RabbitMQ for the Marketplace. |
-| `expire-payments` | Moves stale `PENDING` payments to `EXPIRED`. |
-| `sweep` / `withdraw` | Moves funds to the hot wallet and sends withdrawals. |
+| Worker               | Responsibility                                           |
+| -------------------- | -------------------------------------------------------- |
+| `deposit-watcher`    | Reads chain events with viem and credits the ledger.     |
+| `outbox-publisher`   | Publishes outbox events to RabbitMQ for the Marketplace. |
+| `expire-payments`    | Moves stale `PENDING` payments to `EXPIRED`.             |
+| `sweep` / `withdraw` | Moves funds to the hot wallet and sends withdrawals.     |
 
 ### Data model
 
-| Area | Entities |
-| --- | --- |
-| Payments | `Payment`, `Refund`, `PaymentEvent` |
-| Ledger | `Balance`, `LedgerEntry` |
-| Events | `Outbox` |
-| Crypto | `DepositAddress`, `Deposit`, `Withdrawal` |
+| Area     | Entities                                  |
+| -------- | ----------------------------------------- |
+| Payments | `Payment`, `Refund`, `PaymentEvent`       |
+| Ledger   | `Balance`, `LedgerEntry`                  |
+| Events   | `Outbox`                                  |
+| Crypto   | `DepositAddress`, `Deposit`, `Withdrawal` |
 
 ### Observability
 
@@ -182,25 +182,25 @@ Workers consume jobs from RabbitMQ. `node-cron` triggers periodic runs by puttin
 
 ## Tech stack
 
-| Area | Technology | Status |
-| --- | --- | --- |
-| Runtime and language | Node.js 22, TypeScript | In use |
-| HTTP | Express 5, express-validator | In use |
-| Database | PostgreSQL, Prisma 7 (adapter-pg) | In use |
-| Auth | jsonwebtoken (JWT), bcrypt | In use |
-| Logging | pino, pino-http | In use |
-| Testing | Jest, Supertest | In use |
-| Tooling | pnpm workspaces, esbuild, tsx, nodemon, ESLint | In use |
-| Infrastructure | Docker Compose, GitHub Actions | In use |
-| Cache and locks | Redis (ioredis) | Planned |
-| Messaging | RabbitMQ (amqplib) | Planned |
-| Scheduling | node-cron | Planned |
-| Reliability patterns | Transactional outbox, ledger | Planned |
-| Blockchain | viem, @scure/bip32, @scure/bip39 | Planned |
-| Key management | `KeyProvider` interface (`.env` implementation) | Planned |
-| Observability | `AsyncLocalStorage` requestId, prom-client | Planned |
-| API docs | swagger-ui-express (OpenAPI) | Planned |
-| Integration testing | Testcontainers, Anvil (Foundry) | Planned |
+| Area                 | Technology                                      |
+| -------------------- | ----------------------------------------------- |
+| Runtime and language | Node.js 22, TypeScript                          |
+| HTTP                 | Express 5, express-validator                    |
+| Database             | PostgreSQL, Prisma 7 (adapter-pg)               |
+| Auth                 | jsonwebtoken (JWT), bcrypt                      |
+| Logging              | pino, pino-http                                 |
+| Testing              | Jest, Supertest                                 |
+| Tooling              | pnpm workspaces, esbuild, tsx, nodemon, ESLint  |
+| Infrastructure       | Docker Compose, GitHub Actions                  |
+| Cache and locks      | Redis (ioredis)                                 |
+| Messaging            | RabbitMQ (amqplib)                              |
+| Scheduling           | node-cron                                       |
+| Reliability patterns | Transactional outbox, ledger                    |
+| Blockchain           | viem, @scure/bip32, @scure/bip39                |
+| Key management       | `KeyProvider` interface (`.env` implementation) |
+| Observability        | `AsyncLocalStorage` requestId, prom-client      |
+| API docs             | swagger-ui-express (OpenAPI)                    |
+| Integration testing  | Testcontainers, Anvil (Foundry)                 |
 
 ## Getting started
 
