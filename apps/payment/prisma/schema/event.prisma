@@ -1,16 +1,18 @@
+// Log of every webhook / external event received from a provider (Stripe, mock).
+// Saved BEFORE processing, so nothing is lost if processing fails (see error / processedAt).
 model PaymentEvent {
-  id String @id @default(uuid()) @db.Uuid
-  provider EProviderPayment
-  providerEventId String
-  type String
-  payload Json
-  processedAt DateTime?
-  error String?
-  createdAt DateTime @default(now())
+  id              String           @id @default(uuid()) @db.Uuid
+  provider        EProviderPayment
+  providerEventId String // event id from the provider
+  type            String // e.g. "payment_intent.succeeded"
+  payload         Json // raw body, kept for debugging and replay
+  processedAt     DateTime? // null => not handled yet
+  error           String? // why handling failed
+  createdAt       DateTime         @default(now())
 
-  paymentId String? @db.Uuid
-  payment Payment? @relation(fields: [paymentId], references: [id])
+  paymentId String?  @db.Uuid // null if the payment was not found
+  payment   Payment? @relation(fields: [paymentId], references: [id])
 
-  @@unique([provider, providerEventId])
+  @@unique([provider, providerEventId]) // Stripe retries webhooks: the same event is processed only once
   @@index([paymentId])
 }

@@ -1,0 +1,23 @@
+// Events waiting to be sent to other services (marketplace) through RabbitMQ.
+//
+// Problem it solves: we change a Payment status in Postgres and then publish an event.
+// If the service crashes between these two steps, the event is lost.
+// Solution: write the event into this table in the SAME DB transaction as the status change.
+// Either both are saved or neither. A separate worker reads this table and publishes to RabbitMQ.
+model Outbox {
+  id            String        @id @default(uuid()) @db.Uuid
+  aggregateType String        // what changed: "payment" | "refund" | "deposit" | "withdrawal"
+  aggregateId   String        @db.Uuid // id of that entity
+  eventType     String        // what happened: "payment.captured", "deposit.confirmed", ...
+  payload       Json          // data sent to the consumer
+  requestId     String?       // request id from the original request, to trace it through logs
+  status        EOutboxStatus @default(PENDING) // PENDING => not sent yet, PUBLISHED => sent, FAILED => gave up
+  attempts      Int           @default(0)       // how many times publishing was tried
+  lastError     String?                         // last publish error, for debugging
+  availableAt   DateTime      @default(now())   // do not publish before this time (used for retry backoff)
+  publishedAt   DateTime?                       // when it was sent to RabbitMQ
+  createdAt     DateTime      @default(now())
+
+  @@index([status, availableAt])      // publisher: "give me PENDING events that are ready to send"
+  @@index([aggregateType, aggregateId]) // debugging: "all events of this payment"
+}

@@ -265,6 +265,7 @@ export type RefundWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Refund"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Refund"> | Date | string
   payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
+  ledgerTransactions?: Prisma.LedgerTransactionListRelationFilter
 }
 
 export type RefundOrderByWithRelationInput = {
@@ -280,6 +281,7 @@ export type RefundOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   payment?: Prisma.PaymentOrderByWithRelationInput
+  ledgerTransactions?: Prisma.LedgerTransactionOrderByRelationAggregateInput
 }
 
 export type RefundWhereUniqueInput = Prisma.AtLeast<{
@@ -298,6 +300,7 @@ export type RefundWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Refund"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Refund"> | Date | string
   payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
+  ledgerTransactions?: Prisma.LedgerTransactionListRelationFilter
 }, "id" | "idempotencyKey">
 
 export type RefundOrderByWithAggregationInput = {
@@ -348,6 +351,7 @@ export type RefundCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   payment: Prisma.PaymentCreateNestedOneWithoutRefundsInput
+  ledgerTransactions?: Prisma.LedgerTransactionCreateNestedManyWithoutRefundInput
 }
 
 export type RefundUncheckedCreateInput = {
@@ -362,6 +366,7 @@ export type RefundUncheckedCreateInput = {
   failureReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedCreateNestedManyWithoutRefundInput
 }
 
 export type RefundUpdateInput = {
@@ -376,6 +381,7 @@ export type RefundUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUpdateOneRequiredWithoutRefundsNestedInput
+  ledgerTransactions?: Prisma.LedgerTransactionUpdateManyWithoutRefundNestedInput
 }
 
 export type RefundUncheckedUpdateInput = {
@@ -390,6 +396,7 @@ export type RefundUncheckedUpdateInput = {
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedUpdateManyWithoutRefundNestedInput
 }
 
 export type RefundCreateManyInput = {
@@ -431,6 +438,11 @@ export type RefundUncheckedUpdateManyInput = {
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RefundNullableScalarRelationFilter = {
+  is?: Prisma.RefundWhereInput | null
+  isNot?: Prisma.RefundWhereInput | null
 }
 
 export type RefundListRelationFilter = {
@@ -493,6 +505,22 @@ export type RefundSumOrderByAggregateInput = {
   amount?: Prisma.SortOrder
 }
 
+export type RefundCreateNestedOneWithoutLedgerTransactionsInput = {
+  create?: Prisma.XOR<Prisma.RefundCreateWithoutLedgerTransactionsInput, Prisma.RefundUncheckedCreateWithoutLedgerTransactionsInput>
+  connectOrCreate?: Prisma.RefundCreateOrConnectWithoutLedgerTransactionsInput
+  connect?: Prisma.RefundWhereUniqueInput
+}
+
+export type RefundUpdateOneWithoutLedgerTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.RefundCreateWithoutLedgerTransactionsInput, Prisma.RefundUncheckedCreateWithoutLedgerTransactionsInput>
+  connectOrCreate?: Prisma.RefundCreateOrConnectWithoutLedgerTransactionsInput
+  upsert?: Prisma.RefundUpsertWithoutLedgerTransactionsInput
+  disconnect?: Prisma.RefundWhereInput | boolean
+  delete?: Prisma.RefundWhereInput | boolean
+  connect?: Prisma.RefundWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RefundUpdateToOneWithWhereWithoutLedgerTransactionsInput, Prisma.RefundUpdateWithoutLedgerTransactionsInput>, Prisma.RefundUncheckedUpdateWithoutLedgerTransactionsInput>
+}
+
 export type RefundCreateNestedManyWithoutPaymentInput = {
   create?: Prisma.XOR<Prisma.RefundCreateWithoutPaymentInput, Prisma.RefundUncheckedCreateWithoutPaymentInput> | Prisma.RefundCreateWithoutPaymentInput[] | Prisma.RefundUncheckedCreateWithoutPaymentInput[]
   connectOrCreate?: Prisma.RefundCreateOrConnectWithoutPaymentInput | Prisma.RefundCreateOrConnectWithoutPaymentInput[]
@@ -543,6 +571,78 @@ export type EnumERefundStatusFieldUpdateOperationsInput = {
   set?: $Enums.ERefundStatus
 }
 
+export type RefundCreateWithoutLedgerTransactionsInput = {
+  id?: string
+  amount: bigint | number
+  reason: $Enums.ERefundReason
+  note?: string | null
+  status?: $Enums.ERefundStatus
+  providerRefundId?: string | null
+  idempotencyKey: string
+  failureReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  payment: Prisma.PaymentCreateNestedOneWithoutRefundsInput
+}
+
+export type RefundUncheckedCreateWithoutLedgerTransactionsInput = {
+  id?: string
+  paymentId: string
+  amount: bigint | number
+  reason: $Enums.ERefundReason
+  note?: string | null
+  status?: $Enums.ERefundStatus
+  providerRefundId?: string | null
+  idempotencyKey: string
+  failureReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RefundCreateOrConnectWithoutLedgerTransactionsInput = {
+  where: Prisma.RefundWhereUniqueInput
+  create: Prisma.XOR<Prisma.RefundCreateWithoutLedgerTransactionsInput, Prisma.RefundUncheckedCreateWithoutLedgerTransactionsInput>
+}
+
+export type RefundUpsertWithoutLedgerTransactionsInput = {
+  update: Prisma.XOR<Prisma.RefundUpdateWithoutLedgerTransactionsInput, Prisma.RefundUncheckedUpdateWithoutLedgerTransactionsInput>
+  create: Prisma.XOR<Prisma.RefundCreateWithoutLedgerTransactionsInput, Prisma.RefundUncheckedCreateWithoutLedgerTransactionsInput>
+  where?: Prisma.RefundWhereInput
+}
+
+export type RefundUpdateToOneWithWhereWithoutLedgerTransactionsInput = {
+  where?: Prisma.RefundWhereInput
+  data: Prisma.XOR<Prisma.RefundUpdateWithoutLedgerTransactionsInput, Prisma.RefundUncheckedUpdateWithoutLedgerTransactionsInput>
+}
+
+export type RefundUpdateWithoutLedgerTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  reason?: Prisma.EnumERefundReasonFieldUpdateOperationsInput | $Enums.ERefundReason
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumERefundStatusFieldUpdateOperationsInput | $Enums.ERefundStatus
+  providerRefundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payment?: Prisma.PaymentUpdateOneRequiredWithoutRefundsNestedInput
+}
+
+export type RefundUncheckedUpdateWithoutLedgerTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentId?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  reason?: Prisma.EnumERefundReasonFieldUpdateOperationsInput | $Enums.ERefundReason
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumERefundStatusFieldUpdateOperationsInput | $Enums.ERefundStatus
+  providerRefundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type RefundCreateWithoutPaymentInput = {
   id?: string
   amount: bigint | number
@@ -554,6 +654,7 @@ export type RefundCreateWithoutPaymentInput = {
   failureReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  ledgerTransactions?: Prisma.LedgerTransactionCreateNestedManyWithoutRefundInput
 }
 
 export type RefundUncheckedCreateWithoutPaymentInput = {
@@ -567,6 +668,7 @@ export type RefundUncheckedCreateWithoutPaymentInput = {
   failureReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedCreateNestedManyWithoutRefundInput
 }
 
 export type RefundCreateOrConnectWithoutPaymentInput = {
@@ -636,6 +738,7 @@ export type RefundUpdateWithoutPaymentInput = {
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ledgerTransactions?: Prisma.LedgerTransactionUpdateManyWithoutRefundNestedInput
 }
 
 export type RefundUncheckedUpdateWithoutPaymentInput = {
@@ -649,6 +752,7 @@ export type RefundUncheckedUpdateWithoutPaymentInput = {
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedUpdateManyWithoutRefundNestedInput
 }
 
 export type RefundUncheckedUpdateManyWithoutPaymentInput = {
@@ -665,6 +769,35 @@ export type RefundUncheckedUpdateManyWithoutPaymentInput = {
 }
 
 
+/**
+ * Count Type RefundCountOutputType
+ */
+
+export type RefundCountOutputType = {
+  ledgerTransactions: number
+}
+
+export type RefundCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  ledgerTransactions?: boolean | RefundCountOutputTypeCountLedgerTransactionsArgs
+}
+
+/**
+ * RefundCountOutputType without action
+ */
+export type RefundCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RefundCountOutputType
+   */
+  select?: Prisma.RefundCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RefundCountOutputType without action
+ */
+export type RefundCountOutputTypeCountLedgerTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LedgerTransactionWhereInput
+}
+
 
 export type RefundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -679,6 +812,8 @@ export type RefundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   createdAt?: boolean
   updatedAt?: boolean
   payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
+  ledgerTransactions?: boolean | Prisma.Refund$ledgerTransactionsArgs<ExtArgs>
+  _count?: boolean | Prisma.RefundCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["refund"]>
 
 export type RefundSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -728,6 +863,8 @@ export type RefundSelectScalar = {
 export type RefundOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "paymentId" | "amount" | "reason" | "note" | "status" | "providerRefundId" | "idempotencyKey" | "failureReason" | "createdAt" | "updatedAt", ExtArgs["result"]["refund"]>
 export type RefundInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
+  ledgerTransactions?: boolean | Prisma.Refund$ledgerTransactionsArgs<ExtArgs>
+  _count?: boolean | Prisma.RefundCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RefundIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
@@ -740,6 +877,7 @@ export type $RefundPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Refund"
   objects: {
     payment: Prisma.$PaymentPayload<ExtArgs>
+    ledgerTransactions: Prisma.$LedgerTransactionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1148,6 +1286,7 @@ readonly fields: RefundFieldRefs;
 export interface Prisma__RefundClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   payment<T extends Prisma.PaymentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PaymentDefaultArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  ledgerTransactions<T extends Prisma.Refund$ledgerTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Refund$ledgerTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LedgerTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1586,6 +1725,30 @@ export type RefundDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Refunds to delete.
    */
   limit?: number
+}
+
+/**
+ * Refund.ledgerTransactions
+ */
+export type Refund$ledgerTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LedgerTransaction
+   */
+  select?: Prisma.LedgerTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LedgerTransaction
+   */
+  omit?: Prisma.LedgerTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LedgerTransactionInclude<ExtArgs> | null
+  where?: Prisma.LedgerTransactionWhereInput
+  orderBy?: Prisma.LedgerTransactionOrderByWithRelationInput | Prisma.LedgerTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.LedgerTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LedgerTransactionScalarFieldEnum | Prisma.LedgerTransactionScalarFieldEnum[]
 }
 
 /**

@@ -1,0 +1,78 @@
+// Per-user deposit address derived from the master seed (HD wallet).
+// Created lazily on the first GET /crypto/deposit-address call.
+// The watcher uses this table as the list of addresses to listen to.
+model DepositAddress {
+  id              String             @id @default(uuid()) @db.Uuid
+  userId          String             @db.Uuid
+  network         EBlockchainNetwork
+  address         String             // public address shown to the user
+  derivationIndex Int                @default(autoincrement()) // BIP-44 index: seed + index => address (no private keys stored)
+  createdAt       DateTime           @default(now())
+
+  deposits Deposit[]
+
+  @@unique([userId, network])        // one address per user per network
+  @@unique([network, address])       // lets the watcher map an incoming Transfer.to => user
+  @@unique([network, derivationIndex]) // never reuse an index
+}
+
+// One incoming token transfer (ERC-20 Transfer event) to a user's deposit address.
+// Created by the deposit watcher as PENDING, moved to CONFIRMED after N blocks,
+// at which point a ledger transaction credits the user's balance.
+model Deposit {
+  id               String             @id @default(uuid()) @db.Uuid
+  userId           String             @db.Uuid
+  depositAddressId String             @db.Uuid
+  network          EBlockchainNetwork
+  currency         ECurrency
+  txHash           String
+  logIndex         Int                // position of the Transfer event inside the tx (one tx can emit several)
+  blockNumber      BigInt             // used to compute confirmations: currentBlock - blockNumber
+  amount           BigInt             // minor units (USDC: 6 decimals)
+  status           EDepositStatus     @default(PENDING)
+  createdAt        DateTime           @default(now())
+  confirmedAt      DateTime?          // set when the balance was credited
+
+  depositAddress     DepositAddress      @relation(fields: [depositAddressId], references: [id])
+  ledgerTransactions LedgerTransaction[]
+
+  // Idempotency: the watcher may read the same block twice, a deposit is never credited twice
+  @@unique([network, txHash, logIndex])
+  @@index([userId])                  // deposit history of a user
+  @@index([status])                  // watcher: "find all PENDING deposits to confirm"
+}
+
+// User request to send tokens from the hot wallet to an external address.
+// Flow: PENDING (funds moved to held) -> PROCESSING (worker picked it up)
+// -> SENT (tx broadcast, txHash saved) -> CONFIRMED (held written off)
+// or FAILED/CANCELED (held returned to available).
+model Withdrawal {
+  id             String             @id @default(uuid()) @db.Uuid
+  userId         String             @db.Uuid
+  network        EBlockchainNetwork
+  currency       ECurrency
+  toAddress      String             // external address provided by the user
+  amount         BigInt             // minor units
+  status         EWithdrawalStatus  @default(PENDING)
+  txHash         String?            // filled after the tx is broadcast
+  idempotencyKey String             // from the Idempotency-Key header
+  requestHash    String             // hash of the request body, detects same key + different body
+  failureReason  String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  ledgerTransactions LedgerTransaction[]
+
+  @@unique([userId, idempotencyKey]) // protects from double withdrawal on client retry
+  @@index([userId])                  // withdrawal history of a user
+  @@index([status])                  // worker: "find PENDING / SENT withdrawals to process"
+}
+
+// Watcher progress: the last block already scanned for Transfer events, one row per network.
+// Read on every watcher tick, updated in the same DB transaction as the created Deposits.
+// Lets the watcher resume after a restart without missing or re-reading blocks.
+model ChainCursor {
+  network          EBlockchainNetwork @id
+  lastScannedBlock BigInt
+  updatedAt        DateTime           @updatedAt
+}

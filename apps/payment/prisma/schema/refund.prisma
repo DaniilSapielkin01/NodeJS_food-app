@@ -1,17 +1,20 @@
+// Return of money for a CAPTURED payment (full or partial).
+// Rule checked in the service: payment.refundedAmount + amount <= payment.amount.
 model Refund {
-  id String @id @default(uuid()) @db.Uuid
-  paymentId String @db.Uuid
-  amount BigInt
-  reason ERefundReason
-  note String?
-  status ERefundStatus @default(PENDING)
-  providerRefundId String?
-  idempotencyKey String @unique
-  failureReason String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String        @id @default(uuid()) @db.Uuid
+  paymentId        String        @db.Uuid
+  amount           BigInt // minor units
+  reason           ERefundReason
+  note             String? // free text from the operator
+  status           ERefundStatus @default(PENDING)
+  providerRefundId String? // id in Stripe, null for crypto
+  idempotencyKey   String        @unique // protects from double refund on retry
+  failureReason    String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
-  payment Payment @relation(fields: [paymentId], references: [id])
+  payment            Payment             @relation(fields: [paymentId], references: [id])
+  ledgerTransactions LedgerTransaction[]
 
-  @@index([paymentId])
+  @@index([paymentId]) // "all refunds of this payment"
 }

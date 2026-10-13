@@ -8,7 +8,15 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/DepositAddress'
+export type * from './models/Deposit'
+export type * from './models/Withdrawal'
+export type * from './models/ChainCursor'
 export type * from './models/PaymentEvent'
+export type * from './models/Balance'
+export type * from './models/LedgerTransaction'
+export type * from './models/LedgerEntry'
+export type * from './models/Outbox'
 export type * from './models/Payment'
 export type * from './models/Refund'
 export type * from './commonInputTypes'

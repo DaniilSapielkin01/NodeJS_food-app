@@ -1,29 +1,43 @@
+// One attempt to pay for one order. Created by marketplace via POST /payments.
+// Status changes follow the state machine described in EPaymentStatus.
+// Money movement itself is stored in LedgerTransaction, not here.
 model Payment {
-  id String @id @default(uuid()) @db.Uuid
-  orderId String @db.Uuid
-  userId String @db.Uuid
-  amount BigInt
-  refundedAmount BigInt @default(0)
+  id       String  @id @default(uuid()) @db.Uuid
+  orderId  String  @db.Uuid // order in marketplace (other service, so no FK)
+  userId   String  @db.Uuid // who pays
+  toUserId String? @db.Uuid // who gets the money on capture (courier / company); must be set before capture
 
-  currency ECurrency
-  method EMethodPayment
+  amount         BigInt // total in minor units
+  feeAmount      BigInt @default(0) // platform commission, taken from amount on capture
+  refundedAmount BigInt @default(0) // sum of successful refunds, never above amount
+
+  currency          ECurrency
+  method            EMethodPayment
   provider          EProviderPayment
-  providerPaymentId String?
+  providerPaymentId String? // id in Stripe, null for MOCK and CRYPTO
 
-  status EPaymentStatus @default(PENDING)
-  idempotencyKey String
-  requestHash String
-  failureReason String?
+  status         EPaymentStatus @default(PENDING)
+  idempotencyKey String // from the Idempotency-Key header
+  requestHash    String // hash of the request body: same key + different body => 409/422
+  failureReason  String?
+
+  expiresAt    DateTime? // after this time a PENDING payment becomes EXPIRED
+  authorizedAt DateTime?
+  capturedAt   DateTime?
+  releasedAt   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  refunds Refund[]
-  events  PaymentEvent[]
+  refunds            Refund[]
+  events             PaymentEvent[]
+  ledgerTransactions LedgerTransaction[]
 
-  @@unique([userId, idempotencyKey])
-  @@unique([provider, providerPaymentId])
-  @@index([orderId])
-  @@index([userId])
+  @@unique([userId, idempotencyKey]) // client retry returns the same payment instead of creating a new one
+  @@unique([provider, providerPaymentId]) // webhook finds the payment by the provider's id
+  @@index([orderId]) // "find payment by order"
+  @@index([userId]) // payment history of a user
+  @@index([toUserId]) // earnings history of a courier / company
   @@index([status])
+  @@index([status, expiresAt]) // cron: "PENDING payments that are already expired"
 }

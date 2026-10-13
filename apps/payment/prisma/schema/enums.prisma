@@ -1,3 +1,5 @@
+// Currency of a payment or balance. Amounts are always stored in minor units.
+// USD/EUR/UAH => cents/kopecks (2 decimals), USDC/USDT => 6 decimals.
 enum ECurrency {
   USD
   EUR
@@ -6,31 +8,37 @@ enum ECurrency {
   USDC
 }
 
+// How the customer pays.
 enum EMethodPayment {
-  CARD
-  CRYPTO
+  CARD   // goes through Stripe or the mock provider
+  CRYPTO // paid from the user's internal crypto balance
 }
 
+// Who processes the payment.
 enum EProviderPayment {
-  MOCK
+  MOCK   // fake provider for dev and tests
   STRIPE
-  CRYPTO
+  CRYPTO // our own ledger, no external provider
 }
 
+// Payment lifecycle. Allowed transitions:
+// PENDING -> AUTHORIZED | FAILED | CANCELED | EXPIRED
+// AUTHORIZED -> CAPTURED | RELEASED
+// CAPTURED -> PARTIALLY_REFUNDED -> REFUNDED (or CAPTURED -> REFUNDED)
 enum EPaymentStatus {
-  PENDING            // платёж создан, ждём оплаты
-  AUTHORIZED         // деньги заблокированы (hold)
-  CAPTURED           // деньги списаны
-  RELEASED           // блокировка снята, деньги не списаны
-  FAILED             // оплата не прошла
-  CANCELED           // отменён
-  EXPIRED            // истекло время
-  PARTIALLY_REFUNDED // часть денег возвращена
-  REFUNDED           // возвращено полностью
+  PENDING            // created, waiting for the payment
+  AUTHORIZED         // money is on hold, not charged yet
+  CAPTURED           // money is charged (order delivered)
+  RELEASED           // hold removed, money returned to available
+  FAILED             // payment did not go through
+  CANCELED           // canceled before any money moved
+  EXPIRED            // was PENDING for too long (set by a cron job)
+  PARTIALLY_REFUNDED // part of the money was returned
+  REFUNDED           // everything was returned
 }
 
 enum ERefundStatus {
-  PENDING
+  PENDING   // created, provider or ledger has not confirmed yet
   SUCCEEDED
   FAILED
 }
@@ -41,4 +49,57 @@ enum ERefundReason {
   DUPLICATE
   FRAUDULENT
   OTHER
+}
+
+// --- ledger ---
+
+// Which part of an account's money an entry changes.
+enum EBalanceBucket {
+  AVAILABLE // can be spent or withdrawn
+  HELD      // locked by an order
+}
+
+// Business reason of a ledger transaction.
+enum ELedgerTxType {
+  DEPOSIT             // confirmed crypto deposit credited to the user
+  HOLD                // available -> held for an order
+  CAPTURE             // held -> recipient's available (+ platform fee)
+  RELEASE             // held -> available back
+  REFUND              // money returned after capture
+  FEE                 // platform commission
+  WITHDRAWAL_HOLD     // withdrawal requested: available -> held
+  WITHDRAWAL_COMPLETE // withdrawal confirmed on chain: held written off
+  WITHDRAWAL_RELEASE  // withdrawal failed: held -> available back
+  ADJUSTMENT          // manual correction by an admin
+}
+
+// --- crypto ---
+
+enum EBlockchainNetwork {
+  ANVIL // local test chain (Docker)
+  SEPOLIA
+  ETHEREUM
+  POLYGON
+}
+
+enum EDepositStatus {
+  PENDING   // transfer seen, not enough confirmations yet
+  CONFIRMED // N confirmations reached, user's balance credited
+}
+
+enum EWithdrawalStatus {
+  PENDING    // created, money is in held
+  PROCESSING // worker picked it up
+  SENT       // tx broadcast to the network
+  CONFIRMED  // tx confirmed, held written off
+  FAILED     // error, held returned to available
+  CANCELED
+}
+
+// --- outbox ---
+
+enum EOutboxStatus {
+  PENDING   // not published yet
+  PUBLISHED // sent to RabbitMQ
+  FAILED    // gave up after too many attempts
 }

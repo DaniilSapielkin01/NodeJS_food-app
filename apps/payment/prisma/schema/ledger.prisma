@@ -1,0 +1,69 @@
+// Current money state of one account in one currency.
+// An account is a user OR a system account (EXTERNAL, PLATFORM_FEES), identified by a fixed userId.
+// This table is a fast-read cache: the real source of truth is LedgerEntry.
+// Updated inside the same DB transaction as the ledger entries.
+model Balance {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  currency  ECurrency
+  available BigInt    @default(0) // money the user can spend or withdraw
+  held      BigInt    @default(0) // money locked by an order (hold) until capture/release
+  version   Int       @default(0) // optimistic lock, +1 on every change
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, currency]) // one row per user per currency
+}
+
+// One business operation that moves money (deposit, hold, capture, ...).
+// It groups several LedgerEntry rows. Rule: the sum of its entries per currency is always 0.
+// Money never appears or disappears, it only moves from one account to another.
+model LedgerTransaction {
+  id             String        @id @default(uuid()) @db.Uuid
+  type           ELedgerTxType // what kind of operation this is
+  idempotencyKey String        @unique // same operation sent twice => second insert fails, no double movement
+  description    String?
+  createdAt      DateTime      @default(now())
+
+  // Link to the thing that caused the movement. Only one of them is filled.
+  paymentId    String? @db.Uuid
+  refundId     String? @db.Uuid
+  depositId    String? @db.Uuid
+  withdrawalId String? @db.Uuid
+
+  payment    Payment?    @relation(fields: [paymentId], references: [id])
+  refund     Refund?     @relation(fields: [refundId], references: [id])
+  deposit    Deposit?    @relation(fields: [depositId], references: [id])
+  withdrawal Withdrawal? @relation(fields: [withdrawalId], references: [id])
+
+  entries LedgerEntry[]
+
+  @@index([paymentId])    // "show all money movements of this payment"
+  @@index([refundId])
+  @@index([depositId])
+  @@index([withdrawalId])
+  @@index([type])
+}
+
+// One line of the journal: "this account's AVAILABLE or HELD changed by +X or -X".
+// Immutable: never update, never delete. A mistake is fixed by a new reverse entry.
+//
+// Examples (user pays 10, fee 1):
+//   DEPOSIT : EXTERNAL.available -10,  user.available +10
+//   HOLD    : user.available -10,      user.held +10
+//   CAPTURE : user.held -10,           courier.available +9,  PLATFORM_FEES.available +1
+//   RELEASE : user.held -10,           user.available +10
+model LedgerEntry {
+  id            String         @id @default(uuid()) @db.Uuid
+  transactionId String         @db.Uuid
+  userId        String         @db.Uuid
+  currency      ECurrency
+  bucket        EBalanceBucket // AVAILABLE or HELD
+  amount        BigInt         // signed: + adds, - subtracts (minor units)
+  createdAt     DateTime       @default(now())
+
+  transaction LedgerTransaction @relation(fields: [transactionId], references: [id])
+
+  @@index([transactionId])    // all lines of one operation (to check that sum = 0)
+  @@index([userId, currency]) // user's money history, and to recalculate Balance from scratch
+}

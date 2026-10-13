@@ -405,24 +405,8 @@ export type PaymentEventOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
 export type EnumEProviderPaymentFieldUpdateOperationsInput = {
   set?: $Enums.EProviderPayment
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
 }
 
 export type PaymentEventCreateNestedManyWithoutPaymentInput = {

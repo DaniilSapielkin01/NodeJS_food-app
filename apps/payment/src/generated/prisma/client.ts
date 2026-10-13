@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more PaymentEvents
- * const paymentEvents = await prisma.paymentEvent.findMany()
+ * // Fetch zero or more DepositAddresses
+ * const depositAddresses = await prisma.depositAddress.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,10 +42,50 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
+ * Model DepositAddress
+ * 
+ */
+export type DepositAddress = Prisma.DepositAddressModel
+/**
+ * Model Deposit
+ * 
+ */
+export type Deposit = Prisma.DepositModel
+/**
+ * Model Withdrawal
+ * 
+ */
+export type Withdrawal = Prisma.WithdrawalModel
+/**
+ * Model ChainCursor
+ * 
+ */
+export type ChainCursor = Prisma.ChainCursorModel
+/**
  * Model PaymentEvent
  * 
  */
 export type PaymentEvent = Prisma.PaymentEventModel
+/**
+ * Model Balance
+ * 
+ */
+export type Balance = Prisma.BalanceModel
+/**
+ * Model LedgerTransaction
+ * 
+ */
+export type LedgerTransaction = Prisma.LedgerTransactionModel
+/**
+ * Model LedgerEntry
+ * 
+ */
+export type LedgerEntry = Prisma.LedgerEntryModel
+/**
+ * Model Outbox
+ * 
+ */
+export type Outbox = Prisma.OutboxModel
 /**
  * Model Payment
  * 
