@@ -24,7 +24,8 @@ enum EProviderPayment {
 // Payment lifecycle. Allowed transitions:
 // PENDING -> AUTHORIZED | FAILED | CANCELED | EXPIRED
 // AUTHORIZED -> CAPTURED | RELEASED
-// CAPTURED -> PARTIALLY_REFUNDED -> REFUNDED (or CAPTURED -> REFUNDED)
+// CAPTURED -> PARTIALLY_REFUNDED | REFUNDED
+// PARTIALLY_REFUNDED -> PARTIALLY_REFUNDED | REFUNDED (while refundedAmount < amount)
 enum EPaymentStatus {
   PENDING            // created, waiting for the payment
   AUTHORIZED         // money is on hold, not charged yet

@@ -9,6 +9,7 @@ model Refund {
   status           ERefundStatus @default(PENDING)
   providerRefundId String? // id in Stripe, null for crypto
   idempotencyKey   String        @unique // protects from double refund on retry
+  requestHash      String        // hash of the request body: same key + different body => 422
   failureReason    String?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt

@@ -249,6 +249,7 @@ export const RefundScalarFieldEnum = {
   status: 'status',
   providerRefundId: 'providerRefundId',
   idempotencyKey: 'idempotencyKey',
+  requestHash: 'requestHash',
   failureReason: 'failureReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
